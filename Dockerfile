@@ -32,14 +32,21 @@ RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
 # Copy the application code
 COPY .. /var/www/html
 
-# Set the working directory
-WORKDIR /var/www/html
-
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Install project dependencies
 RUN composer install
 
+# UID/GID passed at build time
+ARG UID=1000
+ARG GID=1000
+RUN groupadd -g ${GID} adonat && \
+    useradd -u ${UID} -g ${GID} -m adonat
+USER adonat
+
+# Set the working directory
+WORKDIR /var/www/html
+
 # Set permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+#RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache

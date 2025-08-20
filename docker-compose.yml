@@ -1,9 +1,12 @@
-version: '3.8'
-
 services:
     php-apache:
         container_name: "${CONTAINER_NAME_PREFIX}-apache-php"
-        build: .
+        build:
+            context: .
+            args:
+                UID: ${UID}
+                GID: ${GID}
+        user: "${UID}:${GID}"
         restart: always
         depends_on:
             - db

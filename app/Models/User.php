@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -43,5 +44,18 @@ class User extends Authenticatable
             ->using(GroupUser::class)
             ->withPivot(['status', 'is_creator'])
             ->withTimestamps();
+    }
+
+    public function events()
+    {
+        return $this->belongsToMany(Event::class)
+            ->using(EventUser::class)
+            ->withPivot(['participate', 'is_creator'])
+            ->withTimestamps();
+    }
+
+    public function message(): HasMany
+    {
+        return $this->hasMany(Message::class);
     }
 }

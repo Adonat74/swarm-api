@@ -1,0 +1,25 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+
+class CommentSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        $comments = Comment::factory()
+            ->count(40)
+            ->create();
+
+        Comment::factory()
+            ->count(20)
+            ->create([
+                'parent_id' => $comments->random()->id,
+            ]);
+    }
+}

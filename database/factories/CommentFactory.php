@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Event;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -23,8 +24,8 @@ class CommentFactory extends Factory
 
         return [
             'body' => $this->faker->realText(150, 2),
-            'likes' => 'text',
-            'group_id' => $events->random()->id,
+            'likes' => rand(0, 10),
+            'event_id' => $events->random()->id,
             'user_id' => $users->random()->id,
         ];
     }

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Event;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -17,14 +18,13 @@ class EventUserSeeder extends Seeder
         $events = Event::all();
         $users = User::all();
 
-        $status = ['pending', 'approved', 'rejected'];
-
         for ($i = 0; $i < count($events)+5; $i++) {
-            DB::table('group_user')->insert([
-                'group_id' => $events->random()->id,
+            DB::table('event_user')->insert([
+                'event_id' => $events->random()->id,
                 'user_id' => $users->random()->id,
+                'participate' => rand(1, 2) === 1,
                 'is_creator' => rand(1, 5) === 1,
-                'status' => $status[rand(0, 2)],
             ]);
-        }    }
+        }
+    }
 }

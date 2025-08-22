@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Group;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -21,7 +22,7 @@ class EventFactory extends Factory
         $status = ['pending', 'approved', 'rejected'];
 
         return [
-            'title' => $this->faker->jobTitle(),
+            'name' => $this->faker->jobTitle(),
             'description' => $this->faker->realText(300, 2),
             'date_time' => $this->faker->dateTimeBetween($startDate = '+ 5 days', $endDate = '+ 100 days'),
             'location' => $this->faker->city() . ',' . $this->faker->streetAddress(),

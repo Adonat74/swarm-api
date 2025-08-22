@@ -34,4 +34,14 @@ class Event extends Model
             ->withPivot(['participate', 'is_creator'])
             ->withTimestamps();
     }
+
+    public function images(): HasMany
+    {
+        return $this->hasMany(Image::class);
+    }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
 }

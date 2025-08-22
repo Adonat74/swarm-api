@@ -34,4 +34,9 @@ class Group extends Model
     {
         return $this->hasMany(Message::class);
     }
+
+    public function events(): HasMany
+    {
+        return $this->hasMany(Event::class);
+    }
 }

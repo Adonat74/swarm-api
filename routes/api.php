@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminGroupController;
 use App\Http\Controllers\Admin\AdminUserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -135,7 +136,6 @@ Route::prefix('admin')->group(function () {
         Route::get('/{group}/events', 'getGroupEvents');
         Route::get('/{group}/messages', 'getGroupMessages');
         Route::get('/{group}/images', 'getGroupImages');
-        Route::post('/', 'addGroup');
         Route::post('/{group}', 'updateGroup');
         Route::delete('/{group}', 'deleteGroup');
     });

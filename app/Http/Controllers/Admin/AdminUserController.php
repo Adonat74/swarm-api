@@ -47,7 +47,7 @@ class AdminUserController extends Controller
     public function getAllUsers(): JsonResponse
     {
         try {
-            $users = User::with(['images'])->get();
+            $users = User::all();
             return response()->json($users);
         } catch (Exception $e) {
             return $this->errorsService->exception('user', $e);
@@ -320,4 +320,6 @@ class AdminUserController extends Controller
         } catch (Exception $e) {
             return $this->errorsService->exception('user', $e);
         }
-    }}
+    }
+
+}

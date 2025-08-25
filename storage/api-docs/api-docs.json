@@ -6,6 +6,232 @@
         "version": "1.0.0"
     },
     "paths": {
+        "/api/admin/groups": {
+            "get": {
+                "tags": [
+                    "AdminGroups"
+                ],
+                "summary": "Get all groups- need to be authentified as admin",
+                "operationId": "618ba354993e4ee9aada974877c8d176",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "500": {
+                        "description": "An error occurred"
+                    }
+                }
+            }
+        },
+        "/api/admin/groups/{id}": {
+            "get": {
+                "tags": [
+                    "AdminGroups"
+                ],
+                "summary": "Get one group by id - need to be authentified as admin",
+                "operationId": "02e702ceb8bea2bbc6f1b4161a5914e8",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the group",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Group not found"
+                    },
+                    "500": {
+                        "description": "An error occurred"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "AdminGroups"
+                ],
+                "summary": "Update an existing group- need to be authentified as admin",
+                "operationId": "9887dd393a7357f687a03ff2e4ef48be",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the group",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "image"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "description": "Group's name",
+                                        "type": "string"
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Group successfully updated"
+                    },
+                    "404": {
+                        "description": "Group not found"
+                    },
+                    "422": {
+                        "description": "Validation failed"
+                    },
+                    "500": {
+                        "description": "An error occurred"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "AdminGroups"
+                ],
+                "summary": "Delete a group by id- need to be authentified as admin",
+                "operationId": "823cc2c9946b9acf1e5b03e2c45c2ab5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the group",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Group not found"
+                    },
+                    "500": {
+                        "description": "An error occurred"
+                    }
+                }
+            }
+        },
+        "/api/admin/groups/{id}/users": {
+            "get": {
+                "tags": [
+                    "AdminGroups"
+                ],
+                "summary": "Get one group by id and it's users - need to be authentified as admin",
+                "operationId": "268ad89f71047fc14b1f68f10abd1b54",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the group",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Group not found"
+                    },
+                    "500": {
+                        "description": "An error occurred"
+                    }
+                }
+            }
+        },
+        "/api/admin/groups/{id}/events": {
+            "get": {
+                "tags": [
+                    "AdminGroups"
+                ],
+                "summary": "Get one group by id and it's events - need to be authentified as admin",
+                "operationId": "dfab9facdbbe2e45f5a1c552bb19f712",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the group",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Group not found"
+                    },
+                    "500": {
+                        "description": "An error occurred"
+                    }
+                }
+            }
+        },
+        "/api/admin/groups/{id}/messages": {
+            "get": {
+                "tags": [
+                    "AdminGroups"
+                ],
+                "summary": "Get one group by id and it's messages - need to be authentified as admin",
+                "operationId": "b16753027e701a4ba05c500c22c474d7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the group",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Group not found"
+                    },
+                    "500": {
+                        "description": "An error occurred"
+                    }
+                }
+            }
+        },
         "/api/admin/users": {
             "get": {
                 "tags": [
@@ -363,6 +589,10 @@
         }
     },
     "tags": [
+        {
+            "name": "AdminGroups",
+            "description": "AdminGroups"
+        },
         {
             "name": "AdminUsers",
             "description": "AdminUsers"

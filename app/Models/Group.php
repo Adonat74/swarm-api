@@ -15,7 +15,7 @@ class Group extends Model
         'name',
     ];
 
-
+    protected $with = ['images'];
 
     public function users()
     {
@@ -30,7 +30,7 @@ class Group extends Model
         return $this->hasMany(Image::class);
     }
 
-    public function message(): HasMany
+    public function messages(): HasMany
     {
         return $this->hasMany(Message::class);
     }

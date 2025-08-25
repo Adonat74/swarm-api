@@ -19,7 +19,7 @@ class EventFactory extends Factory
     {
         $groups = Group::all();
 
-        $status = ['pending', 'approved', 'rejected'];
+        $status = ['canceled', 'reported', 'active'];
 
         return [
             'name' => $this->faker->jobTitle(),

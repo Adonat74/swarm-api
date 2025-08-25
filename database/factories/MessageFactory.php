@@ -13,15 +13,14 @@ class MessageFactory extends Factory
 
     public function definition(): array
     {
-        $groups = Group::all();
-        $users = User::all();
-
+        $user = User::all()->random();
+        $group = $user->groups->random();
 
         return [
             'body' => $this->faker->realText(300, 2),
             'type' => 'text',
-            'group_id' => $groups->random()->id,
-            'user_id' => $users->random()->id,
+            'group_id' => $group->id,
+            'user_id' => $user->id,
         ];
     }
 }

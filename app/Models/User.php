@@ -19,7 +19,6 @@ class User extends Authenticatable
         'city',
         'postal_code',
         'country',
-        'phone',
         'is_admin',
         'token_version'
     ];
@@ -28,6 +27,8 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    protected $with = ['images'];
 
     protected function casts(): array
     {
@@ -53,7 +54,7 @@ class User extends Authenticatable
             ->withTimestamps();
     }
 
-    public function message(): HasMany
+    public function messages(): HasMany
     {
         return $this->hasMany(Message::class);
     }

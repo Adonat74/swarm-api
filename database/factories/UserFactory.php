@@ -30,7 +30,6 @@ class UserFactory extends Factory
             'city' => $this->faker->city(),
             'postal_code' => $this->faker->postcode(),
             'country' => $this->faker->country(),
-            'phone' => $this->faker->e164PhoneNumber(),
             'is_admin' => false,
             'email_verified_at' => now(),
             'remember_token' => Str::random(10),

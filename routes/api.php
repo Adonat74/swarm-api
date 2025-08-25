@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminUserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -74,6 +75,7 @@ Route::prefix('creator')->group(function () {
 
     /////////////////////////////// CREATOR GROUP /////////////////////////////////////////
     Route::prefix('groups')->controller(CreatorGroupController::class)->group(function () {
+        Route::post('/{group}/users/{user}', 'inviteUserToGroup');
         Route::post('/{group}', 'updateGroup');
         Route::delete('/{group}', 'deleteGroup');
     });
@@ -150,7 +152,6 @@ Route::prefix('admin')->group(function () {
         Route::post('/{user}', 'updateUser');
         Route::delete('/{user}', 'deleteUser');
     });
-
 });
 
 

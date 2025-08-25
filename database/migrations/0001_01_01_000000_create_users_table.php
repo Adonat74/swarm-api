@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('city');
             $table->string('postal_code');
             $table->string('country');
-            $table->string('phone');
             $table->boolean('is_admin')->default(false);
             $table->timestamp('email_verified_at')->nullable();
             $table->integer('token_version')->default(0);

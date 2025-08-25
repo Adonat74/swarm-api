@@ -1,0 +1,371 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "SWARM",
+        "description": "API documentation for SWARM API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/admin/users": {
+            "get": {
+                "tags": [
+                    "AdminUsers"
+                ],
+                "summary": "Get all users- need to be authentified as admin",
+                "operationId": "1574f7bb37412cf31d4796b9574adc07",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "500": {
+                        "description": "An error occurred"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "AdminUsers"
+                ],
+                "summary": "add a new user- need to be authentified as admin",
+                "operationId": "b98adaba342810153badc450249d3219",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password",
+                                    "username",
+                                    "city",
+                                    "postal_code",
+                                    "country"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "description": "User's email address",
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "password": {
+                                        "description": "User's password (minimum 10 characters)",
+                                        "type": "string"
+                                    },
+                                    "username": {
+                                        "description": "the username",
+                                        "type": "string",
+                                        "maxLength": 40
+                                    },
+                                    "city": {
+                                        "description": "User's city",
+                                        "type": "string",
+                                        "maxLength": 255
+                                    },
+                                    "postal_code": {
+                                        "description": "User's postal code (5 digits)",
+                                        "type": "string"
+                                    },
+                                    "country": {
+                                        "description": "User's country",
+                                        "type": "string",
+                                        "maxLength": 20
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User successfully created"
+                    },
+                    "422": {
+                        "description": "Validation failed"
+                    },
+                    "500": {
+                        "description": "An error occurred"
+                    }
+                }
+            }
+        },
+        "/api/admin/users/{id}": {
+            "get": {
+                "tags": [
+                    "AdminUsers"
+                ],
+                "summary": "Get one user by id - need to be authentified as admin",
+                "operationId": "438795ce11614b6a7b0bd62fed3dd3c5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the user",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "500": {
+                        "description": "An error occurred"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "AdminUsers"
+                ],
+                "summary": "Update an existing user- need to be authentified as admin",
+                "operationId": "e38321339ad31675c0cd0b7f6400a90f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the user",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password",
+                                    "username",
+                                    "city",
+                                    "postal_code",
+                                    "country"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "description": "User's email address",
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "password": {
+                                        "description": "User's password (minimum 10 characters)",
+                                        "type": "string"
+                                    },
+                                    "username": {
+                                        "description": "the username",
+                                        "type": "string",
+                                        "maxLength": 40
+                                    },
+                                    "city": {
+                                        "description": "User's city",
+                                        "type": "string",
+                                        "maxLength": 255
+                                    },
+                                    "postal_code": {
+                                        "description": "User's postal code (5 digits)",
+                                        "type": "string"
+                                    },
+                                    "country": {
+                                        "description": "User's country",
+                                        "type": "string",
+                                        "maxLength": 20
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User successfully updated"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "422": {
+                        "description": "Validation failed"
+                    },
+                    "500": {
+                        "description": "An error occurred"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "AdminUsers"
+                ],
+                "summary": "Delete a user by id- need to be authentified as admin",
+                "operationId": "4b74565cf994eb3c5ac14feb11c80c7d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the user",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "500": {
+                        "description": "An error occurred"
+                    }
+                }
+            }
+        },
+        "/api/admin/users/{id}/comments": {
+            "get": {
+                "tags": [
+                    "AdminUsers"
+                ],
+                "summary": "Get one user by id and it's comments - need to be authentified as admin",
+                "operationId": "85de4e453dbceacd7742520a2eda2b30",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the user",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "500": {
+                        "description": "An error occurred"
+                    }
+                }
+            }
+        },
+        "/api/admin/users/{id}/messages": {
+            "get": {
+                "tags": [
+                    "AdminUsers"
+                ],
+                "summary": "Get one user by id and it's messages - need to be authentified as admin",
+                "operationId": "4edbb25c9e85cf836820956536512285",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the user",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "500": {
+                        "description": "An error occurred"
+                    }
+                }
+            }
+        },
+        "/api/admin/users/{id}/groups": {
+            "get": {
+                "tags": [
+                    "AdminUsers"
+                ],
+                "summary": "Get one user by id and it's groups - need to be authentified as admin",
+                "operationId": "46cec73c8d659c885e2ae28972aa1c94",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the user",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "500": {
+                        "description": "An error occurred"
+                    }
+                }
+            }
+        },
+        "/api/admin/users/{id}/events": {
+            "get": {
+                "tags": [
+                    "AdminUsers"
+                ],
+                "summary": "Get one user by id and it's events - need to be authentified as admin",
+                "operationId": "a3f1a7804f0867b97d7953c0728776ec",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the user",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "500": {
+                        "description": "An error occurred"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "AdminUsers",
+            "description": "AdminUsers"
+        }
+    ]
+}

@@ -20,7 +20,9 @@ class CommentSeeder extends Seeder
         Comment::factory()
             ->count(20)
             ->create([
-                'parent_id' => $comments->random()->id,
+                'parent_id' => function () use ($comments) {
+                    return $comments->random()->id;
+                },
             ]);
     }
 }

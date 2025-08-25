@@ -7,32 +7,52 @@ use Illuminate\Support\Facades\Route;
 ///////////////////////////////// USER ROUTES /////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
 
+
+/////////////////////////////// COMMENT /////////////////////////////////////////
+Route::controller(CommentController::class)->group(function () {
+    Route::get('events/{event}/comments', 'getEventComments'); // return the number of replies if any
+    Route::get('comments/{comment}/replies', 'getCommentReplies');
+    Route::post('events/{event}/comments', 'addEventComment');
+    Route::post('comments/{comment}/replies', 'addCommentReply');
+    Route::post('comments/{comment}/likes', 'addCommentLike');
+    Route::delete('comments/{comment}/likes', 'deleteCommentLike');
+    Route::post('comments/{comment}', 'updateComment');
+    Route::delete('comments/{comment}', 'deleteComment');
+});
+
+////////////////////////////////// MESSAGE ////////////////////////////////////////
+Route::controller(MessageController::class)->group(function () {
+    Route::get('groups/{group}/messages', 'getGroupMessages');
+    Route::post('groups/{group}/messages', 'addGroupMessage');
+    Route::post('messages/{message}', 'updateMessage');
+    Route::delete('messages/{message}', 'deleteMessage');
+});
+
 /////////////////////////////// EVENT /////////////////////////////////////////
 Route::prefix('events')->controller(EventController::class)->group(function () {
-    Route::get('/{id}', 'getEvent');
-    Route::get('/{id}/users', 'getEventUsers');
-    Route::get('/{id}/comments', 'getEventComments');
-    Route::get('/{id}/images', 'getEventImages');
+    Route::get('/{event}', 'getEvent');
+    Route::get('/{event}/users', 'getEventUsers');
+    Route::get('/{event}/comments', 'getEventComments');
+    Route::get('/{event}/images', 'getEventImages');
     Route::post('/', 'addEvent');
-    Route::post('/{id}/participate', 'joinEvent');
-    Route::delete('/{id}/participate', 'leaveEvent');
+    Route::post('/{event}/participate', 'joinEvent');
+    Route::delete('/{event}/participate', 'leaveEvent');
 });
 
 /////////////////////////////// GROUP /////////////////////////////////////////
 Route::prefix('groups')->controller(GroupController::class)->group(function () {
-    Route::get('/{id}', 'getGroup');
-    Route::get('/{id}/events', 'getGroupEvents');
-    Route::get('/{id}/users', 'getGroupUsers');
-    Route::get('/{id}/messages', 'getGroupMessages');
-    Route::get('/{id}/images', 'getGroupImages');
+    Route::get('/{group}', 'getGroup');
+    Route::get('/{group}/events', 'getGroupEvents');
+    Route::get('/{group}/users', 'getGroupUsers');
+    Route::get('/{group}/images', 'getGroupImages');
     Route::post('/', 'addGroup');
-    Route::post('/{id}/status', 'updateGroupUserStatus');
+    Route::post('/{group}/status', 'updateGroupUserStatus');
 });
 
 ////////////////////////////////// USER ////////////////////////////////////////////////
 Route::prefix('user')->controller(UserController::class)->group(function () {
     Route::get('/', 'getUser');
-    Route::get('/groups', 'getUserGroups'); // eventually bind incoming events for the user groups interface
+    Route::get('/groups', 'getUserGroups'); // eventually bind incoming events for the user groups interface incomming events number preview
     Route::get('/events', 'getUserEvents');
     Route::post('/', 'updateUser');
     Route::delete('/', 'deleteUser');
@@ -50,6 +70,20 @@ Route::controller(AuthController::class)->group(function () {
 ///////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// CREATOR ROUTES ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
+Route::prefix('creator')->group(function () {
+
+    /////////////////////////////// CREATOR GROUP /////////////////////////////////////////
+    Route::prefix('groups')->controller(CreatorGroupController::class)->group(function () {
+        Route::post('/{group}', 'updateGroup');
+        Route::delete('/{group}', 'deleteGroup');
+    });
+
+    /////////////////////////////// CREATOR EVENT /////////////////////////////////////////
+    Route::prefix('events')->controller(CreatorEventController::class)->group(function () {
+        Route::post('/{event}', 'updateEvent');
+        Route::delete('/{event}', 'deleteEvent');
+    });
+});
 
 // routes pour les créateurs, (delete update) éventuellement d'autres trucs
 
@@ -60,60 +94,61 @@ Route::controller(AuthController::class)->group(function () {
 Route::prefix('admin')->group(function () {
 
     /////////////////////////////// ADMIN COMMENT /////////////////////////////////////////
-    Route::prefix('comments')->controller(AdminCommentController::class)->group(function () {
-        Route::get('/', 'getAllComments');
-        Route::get('/{id}', 'getComment');
-        Route::get('/{id}/replies', 'getCommentReplies');
-        Route::post('/', 'addComment');
-        Route::post('/{id}', 'updateComment');
-        Route::delete('/{id}', 'deleteComment');
+    Route::controller(AdminCommentController::class)->group(function () {
+        Route::get('events/{event}/comments', 'getEventComments');
+        Route::get('comments/{comment}/replies', 'getCommentReplies');
+        Route::post('events/{event}/comments', 'addEventComment');
+        Route::post('comments/{comment}/replies', 'addCommentReply');
+        Route::post('comments/{comment}/likes', 'addCommentLike');
+        Route::delete('comments/{comment}/likes', 'deleteCommentLike');
+        Route::post('comments/{comment}', 'updateComment');
+        Route::delete('comments/{comment}', 'deleteComment');
     });
 
-    /////////////////////////////// ADMIN MESSAGE /////////////////////////////////////////
-    Route::prefix('messages')->controller(AdminMessageController::class)->group(function () {
-        Route::get('/', 'getAllMessages');
-        Route::get('/{id}', 'getMessage');
-        Route::post('/', 'addMessage');
-        Route::post('/{id}', 'updateMessage');
-        Route::delete('/{id}', 'deleteMessage');
+    ////////////////////////////////// ADMIN MESSAGE //////////////////////////////////////
+    Route::controller(AdminMessageController::class)->group(function () {
+        Route::get('groups/{group}/messages', 'getGroupMessages');
+        Route::post('groups/{group}/messages', 'addGroupMessage');
+        Route::post('messages/{message}', 'updateMessage');
+        Route::delete('messages/{message}', 'deleteMessage');
     });
 
     /////////////////////////////// ADMIN EVENT /////////////////////////////////////////
     Route::prefix('events')->controller(AdminEventController::class)->group(function () {
         Route::get('/', 'getAllEvents');
-        Route::get('/{id}', 'getEvent');
-        Route::get('/{id}/users', 'getEventUsers');
-        Route::get('/{id}/comments', 'getEventComments');
-        Route::get('/{id}/images', 'getEventImages');
+        Route::get('/{event}', 'getEvent');
+        Route::get('/{event}/users', 'getEventUsers');
+        Route::get('/{event}/comments', 'getEventComments');
+        Route::get('/{event}/images', 'getEventImages');
         Route::post('/', 'addEvent');
-        Route::post('/{id}', 'updateEvent');
-        Route::delete('/{id}', 'deleteEvent');
+        Route::post('/{event}', 'updateEvent');
+        Route::delete('/{event}', 'deleteEvent');
     });
 
     /////////////////////////////// ADMIN GROUP /////////////////////////////////////////
     Route::prefix('groups')->controller(AdminGroupController::class)->group(function () {
         Route::get('/', 'getAllGroups');
-        Route::get('/{id}', 'getGroup');
-        Route::get('/{id}/users', 'getGroupUsers');
-        Route::get('/{id}/events', 'getGroupEvents');
-        Route::get('/{id}/messages', 'getGroupMessages');
-        Route::get('/{id}/images', 'getGroupImages');
+        Route::get('/{group}', 'getGroup');
+        Route::get('/{group}/users', 'getGroupUsers');
+        Route::get('/{group}/events', 'getGroupEvents');
+        Route::get('/{group}/messages', 'getGroupMessages');
+        Route::get('/{group}/images', 'getGroupImages');
         Route::post('/', 'addGroup');
-        Route::post('/{id}', 'updateGroup');
-        Route::delete('/{id}', 'deleteGroup');
+        Route::post('/{group}', 'updateGroup');
+        Route::delete('/{group}', 'deleteGroup');
     });
 
     /////////////////////////////// ADMIN USER /////////////////////////////////////////
     Route::prefix('users')->controller(AdminUserController::class)->group(function () {
         Route::get('/', 'getAllUsers');
-        Route::get('/{id}', 'getUser');
-        Route::get('/{id}/comments', 'getUserComments');
-        Route::get('/{id}/groups', 'getUserGroups');
-        Route::get('/{id}/messages', 'getUserMessages');
-        Route::get('/{id}/events', 'getUserEvents');
+        Route::get('/{user}', 'getUser');
+        Route::get('/{user}/comments', 'getUserComments');
+        Route::get('/{user}/groups', 'getUserGroups');
+        Route::get('/{user}/messages', 'getUserMessages');
+        Route::get('/{user}/events', 'getUserEvents');
         Route::post('/', 'addUser');
-        Route::post('/{id}', 'updateUser');
-        Route::delete('/{id}', 'deleteUser');
+        Route::post('/{user}', 'updateUser');
+        Route::delete('/{user}', 'deleteUser');
     });
 
 });

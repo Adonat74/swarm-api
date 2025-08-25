@@ -26,11 +26,10 @@ class UserFactory extends Factory
         return [
             'email' => $this->faker->unique()->safeEmail(),
             'password' => static::$password ??= Hash::make('password'),
-            'first_name' => $this->faker->name(),
-            'last_name' => $this->faker->name(),
-            'address' => $this->faker->streetAddress(),
+            'username' => $this->faker->name(),
             'city' => $this->faker->city(),
             'postal_code' => $this->faker->postcode(),
+            'country' => $this->faker->country(),
             'phone' => $this->faker->e164PhoneNumber(),
             'is_admin' => false,
             'email_verified_at' => now(),

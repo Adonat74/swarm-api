@@ -6,6 +6,176 @@
         "version": "1.0.0"
     },
     "paths": {
+        "/api/admin/events": {
+            "get": {
+                "tags": [
+                    "AdminEvents"
+                ],
+                "summary": "Get all events- need to be authentified as admin",
+                "operationId": "3745b55525ad4a8b24f0928520e759e9",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "500": {
+                        "description": "An error occurred"
+                    }
+                }
+            }
+        },
+        "/api/admin/events/{id}": {
+            "get": {
+                "tags": [
+                    "AdminEvents"
+                ],
+                "summary": "Get one event by id - need to be authentified as admin",
+                "operationId": "a9cbeea67d22013e6e2b4861f86ec6bd",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the event",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Event not found"
+                    },
+                    "500": {
+                        "description": "An error occurred"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "AdminEvents"
+                ],
+                "summary": "Delete a event by id- need to be authentified as admin",
+                "operationId": "bd4e88d6b9abc80dea2d63c9f6f4c36f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the event",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Event not found"
+                    },
+                    "500": {
+                        "description": "An error occurred"
+                    }
+                }
+            }
+        },
+        "/api/admin/events/{id}/users": {
+            "get": {
+                "tags": [
+                    "AdminEvents"
+                ],
+                "summary": "Get one event by id and it's users - need to be authentified as admin",
+                "operationId": "e29c4e66ab68d26c58fb45f197accdc1",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the event",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Event not found"
+                    },
+                    "500": {
+                        "description": "An error occurred"
+                    }
+                }
+            }
+        },
+        "/api/admin/events/{id}/comments": {
+            "get": {
+                "tags": [
+                    "AdminEvents"
+                ],
+                "summary": "Get one event by id and it's comments - need to be authentified as admin",
+                "operationId": "9cafed02ac1f7f2f4a6c35ac7818b951",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the event",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Event not found"
+                    },
+                    "500": {
+                        "description": "An error occurred"
+                    }
+                }
+            }
+        },
+        "/api/admin/events/{id}/images": {
+            "get": {
+                "tags": [
+                    "AdminEvents"
+                ],
+                "summary": "Get one event by id and it's images - need to be authentified as admin",
+                "operationId": "abf9390867a95b415799300ce55452cb",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the event",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Event not found"
+                    },
+                    "500": {
+                        "description": "An error occurred"
+                    }
+                }
+            }
+        },
         "/api/admin/groups": {
             "get": {
                 "tags": [
@@ -589,6 +759,10 @@
         }
     },
     "tags": [
+        {
+            "name": "AdminEvents",
+            "description": "AdminEvents"
+        },
         {
             "name": "AdminGroups",
             "description": "AdminGroups"

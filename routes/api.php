@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminEventController;
 use App\Http\Controllers\Admin\AdminGroupController;
 use App\Http\Controllers\Admin\AdminUserController;
 use Illuminate\Http\Request;
@@ -123,7 +124,6 @@ Route::prefix('admin')->group(function () {
         Route::get('/{event}/users', 'getEventUsers');
         Route::get('/{event}/comments', 'getEventComments');
         Route::get('/{event}/images', 'getEventImages');
-        Route::post('/', 'addEvent');
         Route::post('/{event}', 'updateEvent');
         Route::delete('/{event}', 'deleteEvent');
     });

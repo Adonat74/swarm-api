@@ -21,6 +21,8 @@ class Event extends Model
         'group_id',
     ];
 
+    protected $with = ['group'];
+
 
     public function group(): BelongsTo
     {

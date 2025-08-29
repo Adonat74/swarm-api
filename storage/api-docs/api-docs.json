@@ -374,10 +374,10 @@
         "/api/admin/groups/{id}/messages": {
             "get": {
                 "tags": [
-                    "AdminGroups"
+                    "AdminMessages"
                 ],
                 "summary": "Get one group by id and it's messages - need to be authentified as admin",
-                "operationId": "b16753027e701a4ba05c500c22c474d7",
+                "operationId": "41fa945f91a25857c2fdf2860c444b2b",
                 "parameters": [
                     {
                         "name": "id",
@@ -395,6 +395,68 @@
                     },
                     "404": {
                         "description": "Group not found"
+                    },
+                    "500": {
+                        "description": "An error occurred"
+                    }
+                }
+            }
+        },
+        "/api/admin/users/{id}/messages": {
+            "get": {
+                "tags": [
+                    "AdminMessages"
+                ],
+                "summary": "Get one user by id and it's messages - need to be authentified as admin",
+                "operationId": "ed01c2bbe5ddcdc520117fe3684ebca6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the user",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "500": {
+                        "description": "An error occurred"
+                    }
+                }
+            }
+        },
+        "/api/admin/messages/{id}": {
+            "delete": {
+                "tags": [
+                    "AdminMessages"
+                ],
+                "summary": "Delete a message by id- need to be authentified as admin",
+                "operationId": "1bda3fa8ef3dc7537bba9052f26f8156",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the message",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Event not found"
                     },
                     "500": {
                         "description": "An error occurred"
@@ -664,37 +726,6 @@
                 }
             }
         },
-        "/api/admin/users/{id}/messages": {
-            "get": {
-                "tags": [
-                    "AdminUsers"
-                ],
-                "summary": "Get one user by id and it's messages - need to be authentified as admin",
-                "operationId": "4edbb25c9e85cf836820956536512285",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "The ID of the user",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful operation"
-                    },
-                    "404": {
-                        "description": "User not found"
-                    },
-                    "500": {
-                        "description": "An error occurred"
-                    }
-                }
-            }
-        },
         "/api/admin/users/{id}/groups": {
             "get": {
                 "tags": [
@@ -766,6 +797,10 @@
         {
             "name": "AdminGroups",
             "description": "AdminGroups"
+        },
+        {
+            "name": "AdminMessages",
+            "description": "AdminMessages"
         },
         {
             "name": "AdminUsers",

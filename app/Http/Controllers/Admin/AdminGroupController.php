@@ -139,34 +139,6 @@ class AdminGroupController extends Controller
     }
 
     /**
-     * @OA\Get(
-     *     path="/api/admin/groups/{id}/messages",
-     *     summary="Get one group by id and it's messages - need to be authentified as admin",
-     *     tags={"AdminGroups"},
-     *      @OA\Parameter(
-     *          name="id",
-     *          in="path",
-     *          description="The ID of the group",
-     *          required=true,
-     *          @OA\Schema(type="integer")
-     *      ),
-     *     @OA\Response(response=200, description="Successful operation"),
-     *     @OA\Response(response=404, description="Group not found"),
-     *     @OA\Response(response=500, description="An error occurred")
-     * )
-     */
-    public function getGroupMessages(Group $group): JsonResponse
-    {
-        try {
-            return response()->json($group->load(['messages']));
-        } catch (ModelNotFoundException $e) {
-            return $this->errorsService->modelNotFoundException('group', $e);
-        } catch (Exception $e) {
-            return $this->errorsService->exception('group', $e);
-        }
-    }
-
-    /**
      * @OA\Post(
      *     path="/api/admin/groups/{id}",
      *     summary="Update an existing group- need to be authentified as admin",

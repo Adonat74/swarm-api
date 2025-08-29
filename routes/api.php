@@ -2,8 +2,8 @@
 
 use App\Http\Controllers\Admin\AdminEventController;
 use App\Http\Controllers\Admin\AdminGroupController;
+use App\Http\Controllers\Admin\AdminMessageController;
 use App\Http\Controllers\Admin\AdminUserController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -112,8 +112,7 @@ Route::prefix('admin')->group(function () {
     ////////////////////////////////// ADMIN MESSAGE //////////////////////////////////////
     Route::controller(AdminMessageController::class)->group(function () {
         Route::get('groups/{group}/messages', 'getGroupMessages');
-        Route::post('groups/{group}/messages', 'addGroupMessage');
-        Route::post('messages/{message}', 'updateMessage');
+        Route::get('users/{user}/messages', 'getUserMessages');
         Route::delete('messages/{message}', 'deleteMessage');
     });
 
@@ -134,7 +133,6 @@ Route::prefix('admin')->group(function () {
         Route::get('/{group}', 'getGroup');
         Route::get('/{group}/users', 'getGroupUsers');
         Route::get('/{group}/events', 'getGroupEvents');
-        Route::get('/{group}/messages', 'getGroupMessages');
         Route::get('/{group}/images', 'getGroupImages');
         Route::post('/{group}', 'updateGroup');
         Route::delete('/{group}', 'deleteGroup');
@@ -146,7 +144,6 @@ Route::prefix('admin')->group(function () {
         Route::get('/{user}', 'getUser');
         Route::get('/{user}/comments', 'getUserComments');
         Route::get('/{user}/groups', 'getUserGroups');
-        Route::get('/{user}/messages', 'getUserMessages');
         Route::get('/{user}/events', 'getUserEvents');
         Route::post('/', 'addUser');
         Route::post('/{user}', 'updateUser');

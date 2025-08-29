@@ -115,34 +115,6 @@ class AdminUserController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/admin/users/{id}/messages",
-     *     summary="Get one user by id and it's messages - need to be authentified as admin",
-     *     tags={"AdminUsers"},
-     *      @OA\Parameter(
-     *          name="id",
-     *          in="path",
-     *          description="The ID of the user",
-     *          required=true,
-     *          @OA\Schema(type="integer")
-     *      ),
-     *     @OA\Response(response=200, description="Successful operation"),
-     *     @OA\Response(response=404, description="User not found"),
-     *     @OA\Response(response=500, description="An error occurred")
-     * )
-     */
-    public function getUserMessages(User $user): JsonResponse
-    {
-        try {
-            return response()->json($user->load(['messages']));
-        } catch (ModelNotFoundException $e) {
-            return $this->errorsService->modelNotFoundException('user', $e);
-        } catch (Exception $e) {
-            return $this->errorsService->exception('user', $e);
-        }
-    }
-
-    /**
-     * @OA\Get(
      *     path="/api/admin/users/{id}/groups",
      *     summary="Get one user by id and it's groups - need to be authentified as admin",
      *     tags={"AdminUsers"},

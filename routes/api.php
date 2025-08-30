@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminCommentController;
 use App\Http\Controllers\Admin\AdminEventController;
 use App\Http\Controllers\Admin\AdminGroupController;
 use App\Http\Controllers\Admin\AdminMessageController;
@@ -100,12 +101,8 @@ Route::prefix('admin')->group(function () {
     /////////////////////////////// ADMIN COMMENT /////////////////////////////////////////
     Route::controller(AdminCommentController::class)->group(function () {
         Route::get('events/{event}/comments', 'getEventComments');
+        Route::get('users/{user}/comments', 'getUserComments');
         Route::get('comments/{comment}/replies', 'getCommentReplies');
-        Route::post('events/{event}/comments', 'addEventComment');
-        Route::post('comments/{comment}/replies', 'addCommentReply');
-        Route::post('comments/{comment}/likes', 'addCommentLike');
-        Route::delete('comments/{comment}/likes', 'deleteCommentLike');
-        Route::post('comments/{comment}', 'updateComment');
         Route::delete('comments/{comment}', 'deleteComment');
     });
 
@@ -121,7 +118,6 @@ Route::prefix('admin')->group(function () {
         Route::get('/', 'getAllEvents');
         Route::get('/{event}', 'getEvent');
         Route::get('/{event}/users', 'getEventUsers');
-        Route::get('/{event}/comments', 'getEventComments');
         Route::get('/{event}/images', 'getEventImages');
         Route::post('/{event}', 'updateEvent');
         Route::delete('/{event}', 'deleteEvent');
@@ -142,7 +138,6 @@ Route::prefix('admin')->group(function () {
     Route::prefix('users')->controller(AdminUserController::class)->group(function () {
         Route::get('/', 'getAllUsers');
         Route::get('/{user}', 'getUser');
-        Route::get('/{user}/comments', 'getUserComments');
         Route::get('/{user}/groups', 'getUserGroups');
         Route::get('/{user}/events', 'getUserEvents');
         Route::post('/', 'addUser');

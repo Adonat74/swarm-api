@@ -3,28 +3,22 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Event;
 use App\Models\Group;
 use App\Models\Message;
 use App\Models\User;
 use App\Services\ErrorsService;
-use App\Services\ImagesManagementService;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 
 class AdminMessageController extends Controller
 {
-    protected ImagesManagementService $imagesManagementService;
     protected ErrorsService $errorsService;
 
     public function __construct(
-        ImagesManagementService $imagesManagementService,
         ErrorsService $errorsService
-
     )
     {
-        $this->imagesManagementService = $imagesManagementService;
         $this->errorsService = $errorsService;
     }
 
@@ -85,8 +79,6 @@ class AdminMessageController extends Controller
             return $this->errorsService->exception('user', $e);
         }
     }
-
-
 
     /**
      * @OA\Delete(

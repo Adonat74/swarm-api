@@ -83,36 +83,6 @@ class AdminUserController extends Controller
         }
     }
 
-
-
-    /**
-     * @OA\Get(
-     *     path="/api/admin/users/{id}/comments",
-     *     summary="Get one user by id and it's comments - need to be authentified as admin",
-     *     tags={"AdminUsers"},
-     *      @OA\Parameter(
-     *          name="id",
-     *          in="path",
-     *          description="The ID of the user",
-     *          required=true,
-     *          @OA\Schema(type="integer")
-     *      ),
-     *     @OA\Response(response=200, description="Successful operation"),
-     *     @OA\Response(response=404, description="User not found"),
-     *     @OA\Response(response=500, description="An error occurred")
-     * )
-     */
-    public function getUserComments(User $user): JsonResponse
-    {
-        try {
-            return response()->json($user->load(['comments']));
-        } catch (ModelNotFoundException $e) {
-            return $this->errorsService->modelNotFoundException('user', $e);
-        } catch (Exception $e) {
-            return $this->errorsService->exception('user', $e);
-        }
-    }
-
     /**
      * @OA\Get(
      *     path="/api/admin/users/{id}/groups",

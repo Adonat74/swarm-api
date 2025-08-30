@@ -6,6 +6,130 @@
         "version": "1.0.0"
     },
     "paths": {
+        "/api/admin/events/{id}/comments": {
+            "get": {
+                "tags": [
+                    "AdminComments"
+                ],
+                "summary": "Get one event by id and it's comments - need to be authentified as admin",
+                "operationId": "6c0981162e8589f8a9c310c90ffb73ed",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the event",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Event not found"
+                    },
+                    "500": {
+                        "description": "An error occurred"
+                    }
+                }
+            }
+        },
+        "/api/admin/users/{id}/comments": {
+            "get": {
+                "tags": [
+                    "AdminComments"
+                ],
+                "summary": "Get one user by id and it's comments - need to be authentified as admin",
+                "operationId": "73095d0f139344c92f88f4542a313826",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the user",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "500": {
+                        "description": "An error occurred"
+                    }
+                }
+            }
+        },
+        "/api/admin/comments/{id}/replies": {
+            "get": {
+                "tags": [
+                    "AdminComments"
+                ],
+                "summary": "Get one comment by id and it's replies - need to be authentified as admin",
+                "operationId": "09ef9cc6a9c28bfc92e3867bea5f6335",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the comment",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Comment not found"
+                    },
+                    "500": {
+                        "description": "An error occurred"
+                    }
+                }
+            }
+        },
+        "/api/admin/comments/{id}": {
+            "delete": {
+                "tags": [
+                    "AdminComments"
+                ],
+                "summary": "Delete a comment by id- need to be authentified as admin",
+                "operationId": "e553d42aa4ae9c38e5ebbb5cfafb86e7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the comment",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Event not found"
+                    },
+                    "500": {
+                        "description": "An error occurred"
+                    }
+                }
+            }
+        },
         "/api/admin/events": {
             "get": {
                 "tags": [
@@ -90,37 +214,6 @@
                 ],
                 "summary": "Get one event by id and it's users - need to be authentified as admin",
                 "operationId": "e29c4e66ab68d26c58fb45f197accdc1",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "The ID of the event",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful operation"
-                    },
-                    "404": {
-                        "description": "Event not found"
-                    },
-                    "500": {
-                        "description": "An error occurred"
-                    }
-                }
-            }
-        },
-        "/api/admin/events/{id}/comments": {
-            "get": {
-                "tags": [
-                    "AdminEvents"
-                ],
-                "summary": "Get one event by id and it's comments - need to be authentified as admin",
-                "operationId": "9cafed02ac1f7f2f4a6c35ac7818b951",
                 "parameters": [
                     {
                         "name": "id",
@@ -695,37 +788,6 @@
                 }
             }
         },
-        "/api/admin/users/{id}/comments": {
-            "get": {
-                "tags": [
-                    "AdminUsers"
-                ],
-                "summary": "Get one user by id and it's comments - need to be authentified as admin",
-                "operationId": "85de4e453dbceacd7742520a2eda2b30",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "The ID of the user",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful operation"
-                    },
-                    "404": {
-                        "description": "User not found"
-                    },
-                    "500": {
-                        "description": "An error occurred"
-                    }
-                }
-            }
-        },
         "/api/admin/users/{id}/groups": {
             "get": {
                 "tags": [
@@ -790,6 +852,10 @@
         }
     },
     "tags": [
+        {
+            "name": "AdminComments",
+            "description": "AdminComments"
+        },
         {
             "name": "AdminEvents",
             "description": "AdminEvents"

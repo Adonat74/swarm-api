@@ -107,34 +107,6 @@ class AdminEventController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/admin/events/{id}/comments",
-     *     summary="Get one event by id and it's comments - need to be authentified as admin",
-     *     tags={"AdminEvents"},
-     *      @OA\Parameter(
-     *          name="id",
-     *          in="path",
-     *          description="The ID of the event",
-     *          required=true,
-     *          @OA\Schema(type="integer")
-     *      ),
-     *     @OA\Response(response=200, description="Successful operation"),
-     *     @OA\Response(response=404, description="Event not found"),
-     *     @OA\Response(response=500, description="An error occurred")
-     * )
-     */
-    public function getEventComments(Event $event): JsonResponse
-    {
-        try {
-            return response()->json($event->load(['comments']));
-        } catch (ModelNotFoundException $e) {
-            return $this->errorsService->modelNotFoundException('event', $e);
-        } catch (Exception $e) {
-            return $this->errorsService->exception('event', $e);
-        }
-    }
-
-    /**
-     * @OA\Get(
      *     path="/api/admin/events/{id}/images",
      *     summary="Get one event by id and it's images - need to be authentified as admin",
      *     tags={"AdminEvents"},

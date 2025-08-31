@@ -24,7 +24,7 @@ class AdminGroupRequest extends FormRequest
     {
         return [
             'name' => 'bail|required|string|max:45',
-            'image' => 'nullable|file|mimetypes:video/mp4,video/avi,video/mpeg,image/jpeg,image/png,image/jpg,image/gif|max:100000',
+            'image' => 'nullable|file|mimetypes:image/jpeg,image/png,image/jpg,image/gif|max:100000',
         ];
     }
 

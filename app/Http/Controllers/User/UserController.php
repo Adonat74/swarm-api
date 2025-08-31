@@ -4,12 +4,14 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AdminUserRequest;
+use App\Http\Requests\UserRequest;
 use App\Models\User;
 use App\Services\ErrorsService;
 use App\Services\ImagesManagementService;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -27,8 +29,8 @@ class UserController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/users/{id}",
-     *     summary="Get one user by id - need to be authentified as user",
+     *     path="/api/user",
+     *     summary="Get authenticated user",
      *     tags={"Users"},
      *      @OA\Parameter(
      *          name="id",
@@ -42,9 +44,11 @@ class UserController extends Controller
      *     @OA\Response(response=500, description="An error occurred")
      * )
      */
-    public function getUser(User $user): JsonResponse
+    public function getUser(): JsonResponse
     {
         try {
+            $user = Auth::user();
+
             return response()->json($user);
         } catch (ModelNotFoundException $e) {
             return $this->errorsService->modelNotFoundException('user', $e);
@@ -55,8 +59,8 @@ class UserController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/users/{id}/groups",
-     *     summary="Get one user by id and it's groups - need to be authentified as admin",
+     *     path="/api/user/groups",
+     *     summary="Get authenticated user groups",
      *     tags={"Users"},
      *      @OA\Parameter(
      *          name="id",
@@ -70,9 +74,11 @@ class UserController extends Controller
      *     @OA\Response(response=500, description="An error occurred")
      * )
      */
-    public function getUserGroups(User $user): JsonResponse
+    public function getUserGroups(): JsonResponse
     {
         try {
+            $user = Auth::user();
+
             return response()->json($user->load(['groups']));
         } catch (ModelNotFoundException $e) {
             return $this->errorsService->modelNotFoundException('user', $e);
@@ -83,8 +89,8 @@ class UserController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/users/{id}/events",
-     *     summary="Get one user by id and it's events - need to be authentified as admin",
+     *     path="/api/user/events",
+     *     summary="Get authenticated user events",
      *     tags={"Users"},
      *      @OA\Parameter(
      *          name="id",
@@ -98,9 +104,11 @@ class UserController extends Controller
      *     @OA\Response(response=500, description="An error occurred")
      * )
      */
-    public function getUserEvents(User $user): JsonResponse
+    public function getUserEvents(): JsonResponse
     {
         try {
+            $user = Auth::user();
+
             return response()->json($user->load(['events']));
         } catch (ModelNotFoundException $e) {
             return $this->errorsService->modelNotFoundException('user', $e);
@@ -110,53 +118,10 @@ class UserController extends Controller
     }
 
 
-
-
     /**
      * @OA\Post(
-     *     path="/api/users",
-     *     summary="add a new user- need to be authentified as admin",
-     *     tags={"Users"},
-     *     @OA\RequestBody(
-     *          required=true,
-     *          @OA\MediaType(
-     *               mediaType="multipart/form-data",
-     *              @OA\Schema(
-     *                  required={"email", "password", "username", "city", "postal_code", "country"},
-     *                  @OA\Property(property="email", type="string", format="email", description="User's email address"),
-     *                  @OA\Property(property="password", type="string", description="User's password (minimum 10 characters)"),
-     *                  @OA\Property(property="username", type="string", maxLength=40, description="the username"),
-     *                  @OA\Property(property="city", type="string", maxLength=255, description="User's city"),
-     *                  @OA\Property(property="postal_code", type="string", description="User's postal code (5 digits)"),
-     *                  @OA\Property(property="country", type="string", maxLength=20, description="User's country"),
-     *                  @OA\Property(property="image", type="string", format="binary")
-     *              )
-     *          )
-     *     ),
-     *     @OA\Response(response=201, description="User successfully created"),
-     *     @OA\Response(response=422, description="Validation failed"),
-     *     @OA\Response(response=500, description="An error occurred")
-     * )
-     */
-    public function addUser(AdminUserRequest $request): JsonResponse
-    {
-        try {
-            $user = new User($request->safe()->except(['image']));
-            $user->save();
-
-            $this->imagesManagementService->addSingleImage($request, $user, 'user_id');
-
-            return response()->json($user, 201);
-        } catch (Exception $e) {
-            return $this->errorsService->exception('user', $e);
-        }
-    }
-
-
-    /**
-     * @OA\Post(
-     *     path="/api/users/{id}",
-     *     summary="Update an existing user- need to be authentified as admin",
+     *     path="/api/user",
+     *     summary="Update authenticated user",
      *     tags={"Users"},
      *     @OA\Parameter(
      *         name="id",
@@ -169,16 +134,16 @@ class UserController extends Controller
      *          required=true,
      *          @OA\MediaType(
      *               mediaType="multipart/form-data",
-     *              @OA\Schema(
-     *                  required={"email", "password", "username", "city", "postal_code", "country"},
-     *                     @OA\Property(property="email", type="string", format="email", description="User's email address"),
-     *                     @OA\Property(property="password", type="string", description="User's password (minimum 10 characters)"),
-     *                     @OA\Property(property="username", type="string", maxLength=40, description="the username"),
-     *                     @OA\Property(property="city", type="string", maxLength=255, description="User's city"),
-     *                     @OA\Property(property="postal_code", type="string", description="User's postal code (5 digits)"),
-     *                     @OA\Property(property="country", type="string", maxLength=20, description="User's country"),
-     *                     @OA\Property(property="image", type="string", format="binary")
-     *              )
+     *               @OA\Schema(
+     *                   required={"email", "password", "username", "city", "postal_code", "country"},
+     *                      @OA\Property(property="email", type="string", format="email", description="User's email address"),
+     *                      @OA\Property(property="password", type="string", description="User's password (minimum 10 characters)"),
+     *                      @OA\Property(property="username", type="string", maxLength=40, description="the username"),
+     *                      @OA\Property(property="city", type="string", maxLength=255, description="User's city"),
+     *                      @OA\Property(property="postal_code", type="string", description="User's postal code (5 digits)"),
+     *                      @OA\Property(property="country", type="string", maxLength=20, description="User's country"),
+     *                      @OA\Property(property="image", type="string", format="binary")
+     *               )
      *          )
      *     ),
      *     @OA\Response(response=200, description="User successfully updated"),
@@ -187,9 +152,11 @@ class UserController extends Controller
      *     @OA\Response(response=500, description="An error occurred")
      * )
      */
-    public function updateUser(AdminUserRequest $request, User $user): JsonResponse
+    public function updateUser(UserRequest $request): JsonResponse
     {
         try{
+            $user = Auth::user();
+
             $user->update($request->safe()->except(['image']));
 
             $this->imagesManagementService->updateSingleImage($request, $user, 'user_id');
@@ -205,8 +172,8 @@ class UserController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/api/users/{id}",
-     *     summary="Delete a user by id- need to be authentified as admin",
+     *     path="/api/user",
+     *     summary="Delete authenticated user",
      *     tags={"Users"},
      *      @OA\Parameter(
      *          name="id",
@@ -220,9 +187,11 @@ class UserController extends Controller
      *     @OA\Response(response=500, description="An error occurred")
      * )
      */
-    public function deleteUser(User $user): JsonResponse
+    public function deleteUser(): JsonResponse
     {
         try {
+            $user = Auth::user();
+
             $this->imagesManagementService->deleteSingleImage($user);
             $user->delete();
 

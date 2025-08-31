@@ -964,20 +964,6 @@
                 }
             }
         },
-        "/api/logout": {
-            "post": {
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Logout - need to be authentified and role = user",
-                "operationId": "9564a1cc23eca190cf5dfde3e76793f5",
-                "responses": {
-                    "200": {
-                        "description": "User successfully logout"
-                    }
-                }
-            }
-        },
         "/api/refresh": {
             "get": {
                 "tags": [
@@ -992,13 +978,27 @@
                 }
             }
         },
-        "/api/users/{id}": {
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logout - need to be authentified and role = user",
+                "operationId": "9564a1cc23eca190cf5dfde3e76793f5",
+                "responses": {
+                    "200": {
+                        "description": "User successfully logout"
+                    }
+                }
+            }
+        },
+        "/api/user": {
             "get": {
                 "tags": [
                     "Users"
                 ],
-                "summary": "Get one user by id - need to be authentified as user",
-                "operationId": "45ab1c2f35e9e85c783044e807d30cc8",
+                "summary": "Get authenticated user",
+                "operationId": "e4f8b786cff02f6a7219632111aeafbe",
                 "parameters": [
                     {
                         "name": "id",
@@ -1026,8 +1026,8 @@
                 "tags": [
                     "Users"
                 ],
-                "summary": "Update an existing user- need to be authentified as admin",
-                "operationId": "705c3723cc3743f991e945a3e90b60e7",
+                "summary": "Update authenticated user",
+                "operationId": "3278ff5bad39b0a217b17326f4b5be59",
                 "parameters": [
                     {
                         "name": "id",
@@ -1110,8 +1110,8 @@
                 "tags": [
                     "Users"
                 ],
-                "summary": "Delete a user by id- need to be authentified as admin",
-                "operationId": "16500af44b3ddd2e74a0fb429cecf243",
+                "summary": "Delete authenticated user",
+                "operationId": "96ddeb340567d6988c280a490f68c84e",
                 "parameters": [
                     {
                         "name": "id",
@@ -1136,13 +1136,13 @@
                 }
             }
         },
-        "/api/users/{id}/groups": {
+        "/api/user/groups": {
             "get": {
                 "tags": [
                     "Users"
                 ],
-                "summary": "Get one user by id and it's groups - need to be authentified as admin",
-                "operationId": "8feb5f8708e8a9b12211bc73c7cbe139",
+                "summary": "Get authenticated user groups",
+                "operationId": "58e653949dbb804e1baf0b0b5ef46716",
                 "parameters": [
                     {
                         "name": "id",
@@ -1167,13 +1167,13 @@
                 }
             }
         },
-        "/api/users/{id}/events": {
+        "/api/user/events": {
             "get": {
                 "tags": [
                     "Users"
                 ],
-                "summary": "Get one user by id and it's events - need to be authentified as admin",
-                "operationId": "28d2f46775063b06c719181de84fe705",
+                "summary": "Get authenticated user events",
+                "operationId": "64d2e05d83ccec9fa1ffaddb85b3f55f",
                 "parameters": [
                     {
                         "name": "id",
@@ -1191,78 +1191,6 @@
                     },
                     "404": {
                         "description": "User not found"
-                    },
-                    "500": {
-                        "description": "An error occurred"
-                    }
-                }
-            }
-        },
-        "/api/users": {
-            "post": {
-                "tags": [
-                    "Users"
-                ],
-                "summary": "add a new user- need to be authentified as admin",
-                "operationId": "2d9f54ebeeba6601d169b9290fa079a7",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "required": [
-                                    "email",
-                                    "password",
-                                    "username",
-                                    "city",
-                                    "postal_code",
-                                    "country"
-                                ],
-                                "properties": {
-                                    "email": {
-                                        "description": "User's email address",
-                                        "type": "string",
-                                        "format": "email"
-                                    },
-                                    "password": {
-                                        "description": "User's password (minimum 10 characters)",
-                                        "type": "string"
-                                    },
-                                    "username": {
-                                        "description": "the username",
-                                        "type": "string",
-                                        "maxLength": 40
-                                    },
-                                    "city": {
-                                        "description": "User's city",
-                                        "type": "string",
-                                        "maxLength": 255
-                                    },
-                                    "postal_code": {
-                                        "description": "User's postal code (5 digits)",
-                                        "type": "string"
-                                    },
-                                    "country": {
-                                        "description": "User's country",
-                                        "type": "string",
-                                        "maxLength": 20
-                                    },
-                                    "image": {
-                                        "type": "string",
-                                        "format": "binary"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "User successfully created"
-                    },
-                    "422": {
-                        "description": "Validation failed"
                     },
                     "500": {
                         "description": "An error occurred"

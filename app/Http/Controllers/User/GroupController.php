@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AdminGroupRequest;
 use App\Http\Requests\GroupRequest;
+use App\Http\Requests\UpdateStatusRequest;
 use App\Models\Group;
 use App\Services\ErrorsService;
 use App\Services\FilterUsersService;
@@ -217,32 +218,49 @@ class GroupController extends Controller
 
 
     /**
-     * @OA\Delete(
-     *     path="/api/admin/groups/{id}",
-     *     summary="Delete a group by id- need to be authentified as admin",
-     *     tags={"AdminGroups"},
-     *      @OA\Parameter(
-     *          name="id",
-     *          in="path",
-     *          description="The ID of the group",
+     * @OA\Post(
+     *     path="/api/groups/{id}/status",
+     *     summary="Update the user group status - need to be authentified as user",
+     *     tags={"Groups"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="The ID of the group",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
      *          required=true,
-     *          @OA\Schema(type="integer")
-     *      ),
-     *     @OA\Response(response=200, description="Successful operation"),
-     *     @OA\Response(response=404, description="Group not found"),
+     *          @OA\MediaType(
+     *               mediaType="multipart/form-data",
+     *               @OA\Schema(
+     *                   required={"status"},
+     *                   @OA\Property(property="status", type="string",description="Status to change"),
+     *               )
+     *          )
+     *     ),
+     *     @OA\Response(response=201, description="Group successfully created"),
+     *     @OA\Response(response=422, description="Validation failed"),
      *     @OA\Response(response=500, description="An error occurred")
      * )
      */
-    public function deleteGroup(Group $group): JsonResponse
+    public function updateGroupUserStatus(UpdateStatusRequest $request, Group $group): JsonResponse
     {
-        try {
-            $this->imagesManagementService->deleteSingleImage($group);
-            $group->delete();
+        try{
+            $user = Auth::user();
+            $group->users()->updateExistingPivot($user->id, [
+                'status' => $request->status
+            ]);
 
-            return response()->json(['message' => 'group deleted successfully']);
+            $group->load([
+                'users' => function ($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                }
+            ]);
+            return response()->json($group);
         } catch (ModelNotFoundException $e) {
             return $this->errorsService->modelNotFoundException('group', $e);
-        } catch (Exception $e) {
+        } catch (Exception $e){
             return $this->errorsService->exception('group', $e);
         }
     }

@@ -18,20 +18,4 @@ class GroupUser extends Pivot
         'is_creator',
         'status'
     ];
-
-    public function approve(): void
-    {
-        $this->status = self::STATUS_APPROVED;
-        $this->save();
-    }
-    public function reject(): void
-    {
-        $this->status = self::STATUS_REJECTED;
-        $this->save();
-    }
-    public function pending(): void
-    {
-        $this->status = self::STATUS_PENDING;
-        $this->save();
-    }
 }

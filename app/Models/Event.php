@@ -23,7 +23,6 @@ class Event extends Model
 
     protected $with = ['group'];
 
-
     public function group(): BelongsTo
     {
         return $this->belongsTo(Group::class);

@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\AdminGroupController;
 use App\Http\Controllers\Admin\AdminMessageController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\User\AuthController;
+use App\Http\Controllers\User\GroupController;
 use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -47,11 +48,12 @@ Route::prefix('events')->controller(EventController::class)->group(function () {
 
 /////////////////////////////// GROUP /////////////////////////////////////////
 Route::prefix('groups')->controller(GroupController::class)->group(function () {
+    Route::get('/', 'getGroups'); // voir pour la recherche de groupes via input text comment on fait
     Route::get('/{group}', 'getGroup');
     Route::get('/{group}/events', 'getGroupEvents');
     Route::get('/{group}/users', 'getGroupUsers');
-    Route::get('/{group}/images', 'getGroupImages');
-    Route::post('/', 'addGroup');
+    Route::get('/{group}/events/images', 'getGroupImages');
+    Route::post('/', 'addGroup')->middleware(['auth:api']);
     Route::post('/{group}/status', 'updateGroupUserStatus');
 });
 

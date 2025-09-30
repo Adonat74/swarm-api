@@ -7,6 +7,8 @@ use App\Http\Requests\AdminUserRequest;
 use App\Http\Requests\UserRequest;
 use App\Models\User;
 use App\Services\ErrorsService;
+use App\Services\FilterGroupsService;
+use App\Services\FilterUsersService;
 use App\Services\ImagesManagementService;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -17,14 +19,18 @@ class UserController extends Controller
 {
     protected ImagesManagementService $imagesManagementService;
     protected ErrorsService $errorsService;
+    protected FilterGroupsService $filterGroupsService;
 
     public function __construct(
         ImagesManagementService $imagesManagementService,
-        ErrorsService $errorsService
+        ErrorsService $errorsService,
+        FilterGroupsService $filterGroupsService
+
     )
     {
         $this->imagesManagementService = $imagesManagementService;
         $this->errorsService = $errorsService;
+        $this->filterGroupsService = $filterGroupsService;
     }
 
     /**
@@ -78,8 +84,9 @@ class UserController extends Controller
     {
         try {
             $user = Auth::user();
+            $userWithApprovedGroup = $this->filterGroupsService->filterUserApprovedGroups($user);
 
-            return response()->json($user->load(['groups']));
+            return response()->json($userWithApprovedGroup);
         } catch (ModelNotFoundException $e) {
             return $this->errorsService->modelNotFoundException('user', $e);
         } catch (Exception $e) {
@@ -108,7 +115,6 @@ class UserController extends Controller
     {
         try {
             $user = Auth::user();
-
             return response()->json($user->load(['events']));
         } catch (ModelNotFoundException $e) {
             return $this->errorsService->modelNotFoundException('user', $e);

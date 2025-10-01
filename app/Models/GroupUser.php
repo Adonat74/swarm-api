@@ -25,6 +25,11 @@ class GroupUser extends Pivot
         return $this->belongsTo(Group::class);
     }
 
+    public function isCreator(): bool
+    {
+        return $this->is_creator;
+    }
+
     public function isInvited(): bool
     {
         return $this->invited;

@@ -13,13 +13,12 @@ use App\Services\ImagesManagementService;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
-class GroupController extends Controller
-{
-    use AuthorizesRequests;
+class EventController extends Controller
+{    use AuthorizesRequests;
     protected ImagesManagementService $imagesManagementService;
     protected ErrorsService $errorsService;
     protected FilterUsersService $filterUsersService;
@@ -255,41 +254,6 @@ class GroupController extends Controller
         }
     }
 
-    /**
-     * @OA\Delete(
-     *     path="/api/groups/{id}/leave",
-     *     summary="Leave group - need to be authentified as user",
-     *     tags={"Groups"},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         description="The ID of the group",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(response=201, description="Group successfully created"),
-     *     @OA\Response(response=422, description="Validation failed"),
-     *     @OA\Response(response=500, description="An error occurred")
-     * )
-     */
-    public function leaveGroup(Group $group): JsonResponse
-    {
-        try{
-            $user = Auth::user();
-
-            $pivot = $group->users()->where('user_id', $user->id)->firstOrFail()->pivot;
-            $this->authorize('leaveGroup', $pivot);
-
-            $pivot->delete();
-
-            return response()->json(['message' => 'You leaved the group']);
-        } catch (ModelNotFoundException $e) {
-            return $this->errorsService->modelNotFoundException('group', $e);
-        } catch (Exception $e){
-            return $this->errorsService->exception('group', $e);
-        }
-    }
-
 
     /**
      * @OA\Post(
@@ -335,7 +299,7 @@ class GroupController extends Controller
 
 
     /**
-     * @OA\Delete(
+     * @OA\Post(
      *     path="/api/groups/{id}/invitation/reject",
      *     summary="Reject invitation to join group - need to be authentified as user",
      *     tags={"Groups"},
@@ -367,5 +331,4 @@ class GroupController extends Controller
         } catch (Exception $e){
             return $this->errorsService->exception('group', $e);
         }
-    }
-}
+    }}

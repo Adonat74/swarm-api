@@ -13,17 +13,30 @@ class GroupUserPolicy
     public function updateStatus(User $user, GroupUser $groupUser): bool
     {
 
-
-        // 2. If it's the invited user handling their own invitation
         if (
-            $groupUser->status ==='pending' // update only pending
+            $groupUser->status === GroupUser::STATUS_PENDING // update only pending
             && $groupUser->isInvited()
             && $groupUser->user_id === $user->id
         ) {
             return true;
         }
 
-        // 3. Otherwise, forbidden
+        return false;
+    }
+
+    /**
+     * Determine whether the user can leave the group.
+     */
+    public function leaveGroup(User $user, GroupUser $groupUser): bool
+    {
+
+        if (!$groupUser->isCreator()
+            &&$groupUser->status === GroupUser::STATUS_APPROVED // update only approved
+            && $groupUser->user_id === $user->id
+        ) {
+            return true;
+        }
+
         return false;
     }
 }

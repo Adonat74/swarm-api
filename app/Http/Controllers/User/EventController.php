@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\EventRequest;
 use App\Http\Requests\GroupRequest;
 use App\Models\Event;
 use App\Models\Group;
@@ -158,7 +159,6 @@ class EventController extends Controller
         try {
             $this->authorize('view', $event); // policy check
 
-
             return response()->json($event->load(['images']));
         } catch (ModelNotFoundException $e) {
             return $this->errorsService->modelNotFoundException('group', $e);
@@ -169,13 +169,13 @@ class EventController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/groups",
-     *     summary="Add a group - need to be authentified as user",
-     *     tags={"Groups"},
+     *     path="/api/events",
+     *     summary="Add a event - need to be authentified as user",
+     *     tags={"Events"},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
-     *         description="The ID of the group",
+     *         description="The ID of the event",
      *         required=true,
      *         @OA\Schema(type="integer")
      *     ),
@@ -185,33 +185,36 @@ class EventController extends Controller
      *               mediaType="multipart/form-data",
      *               @OA\Schema(
      *                   required={"name", "image"},
-     *                   @OA\Property(property="name", type="string",description="Group's name"),
+     *                   @OA\Property(property="name", type="string",description="Event's name"),
      *                   @OA\Property(property="image", type="string", format="binary")
      *               )
      *          )
      *     ),
-     *     @OA\Response(response=201, description="Group successfully created"),
+     *     @OA\Response(response=201, description="Event successfully created"),
      *     @OA\Response(response=422, description="Validation failed"),
      *     @OA\Response(response=500, description="An error occurred")
      * )
      */
-    public function addGroup(GroupRequest $request): JsonResponse
+    public function addEvent(EventRequest $request): JsonResponse
     {
         try{
             $user = Auth::user();
 
-            $group = Group::create($request->safe()->except(['image']));
-            $group->users()->attach($user->id, [
-                'is_creator' => true,
-                'status' => 'approved'
-            ]);
-            $this->imagesManagementService->addSingleImage($request, $group, 'group_id');
+            $group = Group::findOrFail($request->group_id);
+            $this->authorize('createEvent', $group); // policy check
 
-            return response()->json($group->load(['images', 'users']));
+            $event = Event::create($request->safe()->except(['images']));
+            $event->users()->attach($user->id, [
+                'participate' => true,
+                'is_creator' => true
+            ]);
+            $this->imagesManagementService->addImages($request, $event, 'event_id');
+
+            return response()->json($event->load(['images', 'users']));
         } catch (ModelNotFoundException $e) {
-            return $this->errorsService->modelNotFoundException('group', $e);
+            return $this->errorsService->modelNotFoundException('event', $e);
         } catch (Exception $e){
-            return $this->errorsService->exception('group', $e);
+            return $this->errorsService->exception('event', $e);
         }
     }
 

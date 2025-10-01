@@ -47,6 +47,7 @@ Route::prefix('events')->controller(EventController::class)->middleware(['auth:a
     Route::get('/{event}/comments', 'getEventComments');
     Route::get('/{event}/images', 'getEventImages');
     Route::post('/', 'addEvent');
+    Route::post('/{event}/images', 'addEventImages');
     Route::post('/{event}/participate', 'joinEvent');
     Route::delete('/{event}/participate', 'leaveEvent');
 });

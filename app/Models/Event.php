@@ -12,6 +12,10 @@ class Event extends Model
 {
     use HasFactory, Notifiable;
 
+    const STATUS_ACTIVE = 'active';
+    const STATUS_REPORTED = 'reported';
+    const STATUS_CANCELED = 'canceled';
+
     protected $fillable = [
         'name',
         'description',

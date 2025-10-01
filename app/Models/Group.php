@@ -21,7 +21,7 @@ class Group extends Model
     {
         return $this->belongsToMany(User::class)
             ->using(GroupUser::class)
-            ->withPivot(['status', 'is_creator'])
+            ->withPivot(['status', 'is_creator', 'invited'])
             ->withTimestamps();
     }
 

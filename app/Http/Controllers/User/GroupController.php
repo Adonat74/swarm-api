@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AdminGroupRequest;
 use App\Http\Requests\GroupRequest;
-use App\Http\Requests\UpdateStatusRequest;
 use App\Models\Group;
+use App\Models\GroupUser;
 use App\Services\ErrorsService;
 use App\Services\FilterUsersService;
+use App\Services\GroupUserService;
 use App\Services\ImagesManagementService;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -23,17 +23,19 @@ class GroupController extends Controller
     protected ImagesManagementService $imagesManagementService;
     protected ErrorsService $errorsService;
     protected FilterUsersService $filterUsersService;
+    protected GroupUserService $groupUserService;
 
     public function __construct(
         ImagesManagementService $imagesManagementService,
         ErrorsService $errorsService,
-        FilterUsersService $filterUsersService
-
+        FilterUsersService $filterUsersService,
+        GroupUserService $groupUserService
     )
     {
         $this->imagesManagementService = $imagesManagementService;
         $this->errorsService = $errorsService;
         $this->filterUsersService = $filterUsersService;
+        $this->groupUserService = $groupUserService;
     }
 
 
@@ -216,11 +218,10 @@ class GroupController extends Controller
         }
     }
 
-
     /**
      * @OA\Post(
-     *     path="/api/groups/{id}/status",
-     *     summary="Update the user group status - need to be authentified as user",
+     *     path="/api/groups/{id}/request",
+     *     summary="Request to join group - need to be authentified as user",
      *     tags={"Groups"},
      *     @OA\Parameter(
      *         name="id",
@@ -229,27 +230,59 @@ class GroupController extends Controller
      *         required=true,
      *         @OA\Schema(type="integer")
      *     ),
-     *     @OA\RequestBody(
-     *          required=true,
-     *          @OA\MediaType(
-     *               mediaType="multipart/form-data",
-     *               @OA\Schema(
-     *                   required={"status"},
-     *                   @OA\Property(property="status", type="string",description="Status to change"),
-     *               )
-     *          )
+     *     @OA\Response(response=201, description="Group successfully created"),
+     *     @OA\Response(response=422, description="Validation failed"),
+     *     @OA\Response(response=500, description="An error occurred")
+     * )
+     */
+    public function joinGroupRequest(Group $group): JsonResponse
+    {
+        try{
+            $user = Auth::user();
+
+            $this->groupUserService->requestToJoin($group, $user);
+
+            $group->load([
+                'users' => function ($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                }
+            ]);
+            return response()->json($group);
+        } catch (ModelNotFoundException $e) {
+            return $this->errorsService->modelNotFoundException('group', $e);
+        } catch (Exception $e){
+            return $this->errorsService->exception('group', $e);
+        }
+    }
+
+
+    /**
+     * @OA\Post(
+     *     path="/api/groups/{id}/invitation/approve",
+     *     summary="Accept invitation to join group - need to be authentified as user",
+     *     tags={"Groups"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="The ID of the group",
+     *         required=true,
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Response(response=201, description="Group successfully created"),
      *     @OA\Response(response=422, description="Validation failed"),
      *     @OA\Response(response=500, description="An error occurred")
      * )
      */
-    public function updateGroupUserStatus(UpdateStatusRequest $request, Group $group): JsonResponse
+    public function approveInvitation(Group $group): JsonResponse
     {
         try{
             $user = Auth::user();
+
+            $pivot = $group->users()->where('user_id', $user->id)->firstOrFail()->pivot;
+            $this->authorize('updateStatus', $pivot);
+
             $group->users()->updateExistingPivot($user->id, [
-                'status' => $request->status
+                'status' => GroupUser::STATUS_APPROVED
             ]);
 
             $group->load([
@@ -258,6 +291,42 @@ class GroupController extends Controller
                 }
             ]);
             return response()->json($group);
+        } catch (ModelNotFoundException $e) {
+            return $this->errorsService->modelNotFoundException('group', $e);
+        } catch (Exception $e){
+            return $this->errorsService->exception('group', $e);
+        }
+    }
+
+
+    /**
+     * @OA\Post(
+     *     path="/api/groups/{id}/invitation/reject",
+     *     summary="Reject invitation to join group - need to be authentified as user",
+     *     tags={"Groups"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="The ID of the group",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(response=201, description="Group successfully created"),
+     *     @OA\Response(response=422, description="Validation failed"),
+     *     @OA\Response(response=500, description="An error occurred")
+     * )
+     */
+    public function rejectInvitation(Group $group): JsonResponse
+    {
+        try{
+            $user = Auth::user();
+
+            $pivot = $group->users()->where('user_id', $user->id)->firstOrFail()->pivot;
+            $this->authorize('updateStatus', $pivot);
+
+            $pivot->delete();
+
+            return response()->json(['message' => 'You rejected the invitation']);
         } catch (ModelNotFoundException $e) {
             return $this->errorsService->modelNotFoundException('group', $e);
         } catch (Exception $e){

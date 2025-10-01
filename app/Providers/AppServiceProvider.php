@@ -6,12 +6,18 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
+
+
+    protected $policies = [
+        \App\Models\GroupUser::class => \App\Policies\GroupUserPolicy::class,
+    ];
+
     /**
      * Register any application services.
      */
     public function register(): void
     {
-        //
+
     }
 
     /**

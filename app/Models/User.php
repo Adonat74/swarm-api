@@ -60,7 +60,7 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->belongsToMany(Group::class)
             ->using(GroupUser::class)
-            ->withPivot(['status', 'is_creator'])
+            ->withPivot(['status', 'is_creator', 'invited'])
             ->withTimestamps();
     }
 

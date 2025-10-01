@@ -5,6 +5,11 @@ use App\Http\Controllers\Admin\AdminEventController;
 use App\Http\Controllers\Admin\AdminGroupController;
 use App\Http\Controllers\Admin\AdminMessageController;
 use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\CreatorEventController;
+use App\Http\Controllers\CreatorGroupController;
+use App\Http\Controllers\EventController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\User\AuthController;
 use App\Http\Controllers\User\GroupController;
 use App\Http\Controllers\User\UserController;
@@ -54,7 +59,9 @@ Route::prefix('groups')->controller(GroupController::class)->middleware(['auth:a
     Route::get('/{group}/users', 'getGroupUsers');
     Route::get('/{group}/events/images', 'getGroupImages');
     Route::post('/', 'addGroup');
-    Route::post('/{group}/status', 'updateGroupUserStatus');
+    Route::post('/{group}/request', 'joinGroupRequest');
+    Route::post('/{group}/invitation/approve', 'approveInvitation');
+    Route::post('/{group}/invitation/reject', 'rejectInvitation');
 });
 
 ////////////////////////////////// USER ////////////////////////////////////////////////

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('group_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->boolean('is_creator')->default(false);
             $table->string('status')->default('pending');
+            $table->boolean('invited')->default(false);
             $table->timestamps();
         });
     }

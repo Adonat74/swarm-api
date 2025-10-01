@@ -41,7 +41,7 @@ Route::controller(MessageController::class)->group(function () {
 });
 
 /////////////////////////////// EVENT /////////////////////////////////////////
-Route::prefix('events')->controller(EventController::class)->group(function () {
+Route::prefix('events')->controller(EventController::class)->middleware(['auth:api'])->group(function () {
     Route::get('/{event}', 'getEvent');
     Route::get('/{event}/users', 'getEventUsers');
     Route::get('/{event}/comments', 'getEventComments');

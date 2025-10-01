@@ -59,9 +59,9 @@ class GroupController extends Controller
      */
     public function getGroup(Group $group): JsonResponse
     {
-        $this->authorize('view', $group); // policy check
-
         try {
+            $this->authorize('view', $group); // policy check
+
             return response()->json($group);
         } catch (ModelNotFoundException $e) {
             return $this->errorsService->modelNotFoundException('group', $e);
@@ -90,9 +90,9 @@ class GroupController extends Controller
      */
     public function getGroupEvents(Group $group): JsonResponse
     {
-        $this->authorize('view', $group); // policy check
-
         try {
+            $this->authorize('view', $group); // policy check
+
             return response()->json($group->load(['events']));
         } catch (ModelNotFoundException $e) {
             return $this->errorsService->modelNotFoundException('group', $e);
@@ -122,9 +122,9 @@ class GroupController extends Controller
      */
     public function getGroupUsers(Group $group): JsonResponse
     {
-        $this->authorize('view', $group); // policy check
-
         try {
+            $this->authorize('view', $group); // policy check
+
             $groupWithApprovedUsers = $this->filterUsersService->filterUsersApprovedInGroup($group);
             return response()->json($groupWithApprovedUsers);
         } catch (ModelNotFoundException $e) {
@@ -154,9 +154,9 @@ class GroupController extends Controller
      */
     public function getGroupImages(Group $group): JsonResponse
     {
-        $this->authorize('view', $group); // policy check
-
         try {
+            $this->authorize('view', $group); // policy check
+
             $events = $group->events()
                 ->select('id', 'name', 'date_time', 'location')
                 ->with('images')

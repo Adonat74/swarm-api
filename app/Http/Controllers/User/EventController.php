@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GroupRequest;
+use App\Models\Event;
 use App\Models\Group;
 use App\Models\GroupUser;
 use App\Services\ErrorsService;
@@ -40,13 +41,13 @@ class EventController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/groups/{id}",
-     *     summary="Get one group by id - need to be authentified as user and be part of the group",
-     *     tags={"Groups"},
+     *     path="/api/events/{id}",
+     *     summary="Get one event by id - need to be authentified as user and be part of the group",
+     *     tags={"Events"},
      *      @OA\Parameter(
      *          name="id",
      *          in="path",
-     *          description="The ID of the group",
+     *          description="The ID of the event",
      *          required=true,
      *          @OA\Schema(type="integer")
      *      ),
@@ -56,24 +57,24 @@ class EventController extends Controller
      * )
      * @throws AuthorizationException
      */
-    public function getGroup(Group $group): JsonResponse
+    public function getEvent(Event $event): JsonResponse
     {
-        $this->authorize('view', $group); // policy check
-
         try {
-            return response()->json($group);
+            $this->authorize('view', $event); // policy check
+
+            return response()->json($event);
         } catch (ModelNotFoundException $e) {
-            return $this->errorsService->modelNotFoundException('group', $e);
+            return $this->errorsService->modelNotFoundException('event', $e);
         } catch (Exception $e) {
-            return $this->errorsService->exception('group', $e);
+            return $this->errorsService->exception('event', $e);
         }
     }
 
     /**
      * @OA\Get(
-     *     path="/api/groups/{id}/events",
-     *     summary="Get one group by id and it's events - need to be authentified as user and be part of the group",
-     *     tags={"Groups"},
+     *     path="/api/events/{id}/users",
+     *     summary="Get one event by id and it's users - need to be authentified as user and be part of the group",
+     *     tags={"Events"},
      *      @OA\Parameter(
      *          name="id",
      *          in="path",
@@ -87,29 +88,31 @@ class EventController extends Controller
      * )
      * @throws AuthorizationException
      */
-    public function getGroupEvents(Group $group): JsonResponse
+    public function getEventUsers(Event $event): JsonResponse
     {
-        $this->authorize('view', $group); // policy check
-
         try {
-            return response()->json($group->load(['events']));
+            $this->authorize('view', $event); // policy check
+
+            $eventParticipatingUsers = $this->filterUsersService->filterUsersParticipatingEvent($event);
+
+            return response()->json($eventParticipatingUsers);
         } catch (ModelNotFoundException $e) {
-            return $this->errorsService->modelNotFoundException('group', $e);
+            return $this->errorsService->modelNotFoundException('event', $e);
         } catch (Exception $e) {
-            return $this->errorsService->exception('group', $e);
+            return $this->errorsService->exception('event', $e);
         }
     }
 
 
     /**
      * @OA\Get(
-     *     path="/api/groups/{id}/users",
-     *     summary="Get one group by id and it's users - need to be authentified as user and be part of the group",
-     *     tags={"Groups"},
+     *     path="/api/events/{id}/comments",
+     *     summary="Get one event by id and it's comments - need to be authentified as user and be part of the group",
+     *     tags={"Events"},
      *      @OA\Parameter(
      *          name="id",
      *          in="path",
-     *          description="The ID of the group",
+     *          description="The ID of the event",
      *          required=true,
      *          @OA\Schema(type="integer")
      *      ),
@@ -119,25 +122,24 @@ class EventController extends Controller
      * )
      * @throws AuthorizationException
      */
-    public function getGroupUsers(Group $group): JsonResponse
+    public function getEventComments(Event $event): JsonResponse
     {
-        $this->authorize('view', $group); // policy check
-
         try {
-            $groupWithApprovedUsers = $this->filterUsersService->filterUsersApprovedInGroup($group);
-            return response()->json($groupWithApprovedUsers);
+            $this->authorize('view', $event); // policy check
+
+            return response()->json($event->load(['comments']));
         } catch (ModelNotFoundException $e) {
-            return $this->errorsService->modelNotFoundException('group', $e);
+            return $this->errorsService->modelNotFoundException('event', $e);
         } catch (Exception $e) {
-            return $this->errorsService->exception('group', $e);
+            return $this->errorsService->exception('event', $e);
         }
     }
 
     /**
      * @OA\Get(
-     *     path="/api/groups/{id}/events/images",
-     *     summary="Get one group by id and it's events images - need to be authentified as user and be part of the group",
-     *     tags={"Groups"},
+     *     path="/api/events/{id}/images",
+     *     summary="Get one event by id and it's images - need to be authentified as user and be part of the group",
+     *     tags={"Events"},
      *      @OA\Parameter(
      *          name="id",
      *          in="path",
@@ -146,22 +148,18 @@ class EventController extends Controller
      *          @OA\Schema(type="integer")
      *      ),
      *     @OA\Response(response=200, description="Successful operation"),
-     *     @OA\Response(response=404, description="Group not found"),
+     *     @OA\Response(response=404, description="Event not found"),
      *     @OA\Response(response=500, description="An error occurred")
      * )
      * @throws AuthorizationException
      */
-    public function getGroupImages(Group $group): JsonResponse
+    public function getEventImages(Event $event): JsonResponse
     {
-        $this->authorize('view', $group); // policy check
-
         try {
-            $events = $group->events()
-                ->select('id', 'name', 'date_time', 'location')
-                ->with('images')
-                ->get();
+            $this->authorize('view', $event); // policy check
 
-            return response()->json($events);
+
+            return response()->json($event->load(['images']));
         } catch (ModelNotFoundException $e) {
             return $this->errorsService->modelNotFoundException('group', $e);
         } catch (Exception $e) {

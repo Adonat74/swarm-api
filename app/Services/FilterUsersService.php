@@ -2,15 +2,24 @@
 
 namespace App\Services;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Event;
+use App\Models\Group;
 
 class FilterUsersService
 {
-    public function filterUsersApprovedInGroup (Model $model): Model
+    public function filterUsersApprovedInGroup (Group $group): Group
     {
-        $model->load(['users' => function ($query) {
+        $group->load(['users' => function ($query) {
             $query->wherePivot('status', 'approved');
         }]);
-        return $model;
+        return $group;
+    }
+
+    public function filterUsersParticipatingEvent (Event $event): Event
+    {
+        $event->load(['users' => function ($query) {
+            $query->wherePivot('participate', true);
+        }]);
+        return $event;
     }
 }

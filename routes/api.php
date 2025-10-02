@@ -5,11 +5,11 @@ use App\Http\Controllers\Admin\AdminEventController;
 use App\Http\Controllers\Admin\AdminGroupController;
 use App\Http\Controllers\Admin\AdminMessageController;
 use App\Http\Controllers\Admin\AdminUserController;
-use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CreatorEventController;
 use App\Http\Controllers\CreatorGroupController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\User\AuthController;
+use App\Http\Controllers\User\CommentController;
 use App\Http\Controllers\User\EventController;
 use App\Http\Controllers\User\GroupController;
 use App\Http\Controllers\User\UserController;
@@ -21,8 +21,7 @@ use Illuminate\Support\Facades\Route;
 
 
 /////////////////////////////// COMMENT /////////////////////////////////////////
-Route::controller(CommentController::class)->group(function () {
-    Route::get('events/{event}/comments', 'getEventComments'); // return the number of replies if any
+Route::controller(CommentController::class)->middleware(['auth:api'])->group(function () {
     Route::get('comments/{comment}/replies', 'getCommentReplies');
     Route::post('events/{event}/comments', 'addEventComment');
     Route::post('comments/{comment}/replies', 'addCommentReply');
@@ -86,7 +85,7 @@ Route::controller(AuthController::class)->group(function () {
 
 ///////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// CREATOR ROUTES ///////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////getUserEvents//////////////
 Route::prefix('creator')->group(function () {
 
     /////////////////////////////// CREATOR GROUP /////////////////////////////////////////

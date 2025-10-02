@@ -4,14 +4,10 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EventRequest;
-use App\Http\Requests\GroupRequest;
 use App\Http\Requests\ImagesRequest;
 use App\Models\Event;
 use App\Models\Group;
-use App\Models\GroupUser;
 use App\Services\ErrorsService;
-use App\Services\FilterUsersService;
-use App\Services\GroupUserService;
 use App\Services\ImagesManagementService;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -21,23 +17,18 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
 class EventController extends Controller
-{    use AuthorizesRequests;
+{
+    use AuthorizesRequests;
     protected ImagesManagementService $imagesManagementService;
     protected ErrorsService $errorsService;
-    protected FilterUsersService $filterUsersService;
-    protected GroupUserService $groupUserService;
 
     public function __construct(
         ImagesManagementService $imagesManagementService,
         ErrorsService $errorsService,
-        FilterUsersService $filterUsersService,
-        GroupUserService $groupUserService
     )
     {
         $this->imagesManagementService = $imagesManagementService;
         $this->errorsService = $errorsService;
-        $this->filterUsersService = $filterUsersService;
-        $this->groupUserService = $groupUserService;
     }
 
 
@@ -128,7 +119,13 @@ class EventController extends Controller
         try {
             $this->authorize('view', $event); // policy check
 
-            return response()->json($event->load(['comments']));
+            $event->load([
+                'comments' => function ($query) {
+                    $query->withCount('replies'); // adds "replies_count"
+                }
+            ]);
+
+            return response()->json($event);
         } catch (ModelNotFoundException $e) {
             return $this->errorsService->modelNotFoundException('event', $e);
         } catch (Exception $e) {

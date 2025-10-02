@@ -31,7 +31,7 @@ class GroupUserPolicy
     {
 
         if (!$groupUser->isCreator()
-            &&$groupUser->status === GroupUser::STATUS_APPROVED // update only approved
+            && $groupUser->status === GroupUser::STATUS_APPROVED // update only approved
             && $groupUser->user_id === $user->id
         ) {
             return true;

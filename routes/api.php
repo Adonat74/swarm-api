@@ -48,8 +48,8 @@ Route::prefix('events')->controller(EventController::class)->middleware(['auth:a
     Route::get('/{event}/images', 'getEventImages');
     Route::post('/', 'addEvent');
     Route::post('/{event}/images', 'addEventImages');
-    Route::post('/{event}/participate', 'joinEvent');
-    Route::delete('/{event}/participate', 'leaveEvent');
+    Route::post('/{event}/participate', 'participateEvent');
+    Route::delete('/{event}/leave', 'leaveEvent');
 });
 
 /////////////////////////////// GROUP /////////////////////////////////////////

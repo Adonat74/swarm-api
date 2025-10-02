@@ -14,12 +14,4 @@ class FilterUsersService
         }]);
         return $group;
     }
-
-    public function filterUsersParticipatingEvent (Event $event): Event
-    {
-        $event->load(['users' => function ($query) {
-            $query->wherePivot('participate', true);
-        }]);
-        return $event;
-    }
 }

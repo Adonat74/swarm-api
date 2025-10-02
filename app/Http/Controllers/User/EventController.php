@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EventRequest;
 use App\Http\Requests\GroupRequest;
+use App\Http\Requests\ImagesRequest;
 use App\Models\Event;
 use App\Models\Group;
 use App\Models\GroupUser;
@@ -94,9 +95,8 @@ class EventController extends Controller
         try {
             $this->authorize('view', $event); // policy check
 
-            $eventParticipatingUsers = $this->filterUsersService->filterUsersParticipatingEvent($event);
-
-            return response()->json($eventParticipatingUsers);
+            $participants = $event->load(['users']);
+            return response()->json($participants);
         } catch (ModelNotFoundException $e) {
             return $this->errorsService->modelNotFoundException('event', $e);
         } catch (Exception $e) {
@@ -205,7 +205,6 @@ class EventController extends Controller
 
             $event = Event::create($request->safe()->except(['images']));
             $event->users()->attach($user->id, [
-                'participate' => true,
                 'is_creator' => true
             ]);
             $this->imagesManagementService->addImages($request, $event, 'event_id');
@@ -221,8 +220,8 @@ class EventController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/events",
-     *     summary="Add a event - need to be authentified as user",
+     *     path="/api/events/{id}/images",
+     *     summary="Add a event images - need to be authentified as user and be part of the group",
      *     tags={"Events"},
      *     @OA\Parameter(
      *         name="id",
@@ -247,22 +246,14 @@ class EventController extends Controller
      *     @OA\Response(response=500, description="An error occurred")
      * )
      */
-    public function addEventImages(Event $event): JsonResponse
+    public function addEventImages(ImagesRequest $request, Event $event): JsonResponse
     {
         try{
-            $user = Auth::user();
+            $this->authorize('addEventImages', $event); // policy check
 
-            $group = Group::findOrFail($request->group_id);
-            $this->authorize('createEvent', $group); // policy check
-
-            $event = Event::create($request->safe()->except(['images']));
-            $event->users()->attach($user->id, [
-                'participate' => true,
-                'is_creator' => true
-            ]);
             $this->imagesManagementService->addImages($request, $event, 'event_id');
 
-            return response()->json($event->load(['images', 'users']));
+            return response()->json($event->load(['images']));
         } catch (ModelNotFoundException $e) {
             return $this->errorsService->modelNotFoundException('event', $e);
         } catch (Exception $e){
@@ -272,13 +263,13 @@ class EventController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/groups/{id}/request",
-     *     summary="Request to join group - need to be authentified as user",
-     *     tags={"Groups"},
+     *     path="/api/events/{id}/participate",
+     *     summary="Participate to event - need to be authentified as user",
+     *     tags={"Events"},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
-     *         description="The ID of the group",
+     *         description="The ID of the event",
      *         required=true,
      *         @OA\Schema(type="integer")
      *     ),
@@ -287,19 +278,21 @@ class EventController extends Controller
      *     @OA\Response(response=500, description="An error occurred")
      * )
      */
-    public function joinGroupRequest(Group $group): JsonResponse
+    public function participateEvent(Event $event): JsonResponse
     {
         try{
             $user = Auth::user();
 
-            $this->groupUserService->requestToJoin($group, $user);
+            $this->authorize('participateEvent', $event); // policy check
 
-            $group->load([
+            $event->users()->attach($user->id);
+
+            $event->load([
                 'users' => function ($query) use ($user) {
                     $query->where('user_id', $user->id);
                 }
             ]);
-            return response()->json($group);
+            return response()->json($event);
         } catch (ModelNotFoundException $e) {
             return $this->errorsService->modelNotFoundException('group', $e);
         } catch (Exception $e){
@@ -309,14 +302,14 @@ class EventController extends Controller
 
 
     /**
-     * @OA\Post(
-     *     path="/api/groups/{id}/invitation/approve",
-     *     summary="Accept invitation to join group - need to be authentified as user",
-     *     tags={"Groups"},
+     * @OA\Delete(
+     *     path="/api/events/{id}/leave",
+     *     summary="leave event - need to be authentified as user",
+     *     tags={"Events"},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
-     *         description="The ID of the group",
+     *         description="The ID of the event",
      *         required=true,
      *         @OA\Schema(type="integer")
      *     ),
@@ -325,63 +318,21 @@ class EventController extends Controller
      *     @OA\Response(response=500, description="An error occurred")
      * )
      */
-    public function approveInvitation(Group $group): JsonResponse
+    public function leaveEvent(Event $event): JsonResponse
     {
         try{
             $user = Auth::user();
 
-            $pivot = $group->users()->where('user_id', $user->id)->firstOrFail()->pivot;
-            $this->authorize('updateStatus', $pivot);
+            $this->authorize('leaveEvent', $event); // policy check
 
-            $group->users()->updateExistingPivot($user->id, [
-                'status' => GroupUser::STATUS_APPROVED
-            ]);
-
-            $group->load([
-                'users' => function ($query) use ($user) {
-                    $query->where('user_id', $user->id);
-                }
-            ]);
-            return response()->json($group);
-        } catch (ModelNotFoundException $e) {
-            return $this->errorsService->modelNotFoundException('group', $e);
-        } catch (Exception $e){
-            return $this->errorsService->exception('group', $e);
-        }
-    }
-
-
-    /**
-     * @OA\Post(
-     *     path="/api/groups/{id}/invitation/reject",
-     *     summary="Reject invitation to join group - need to be authentified as user",
-     *     tags={"Groups"},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         description="The ID of the group",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(response=201, description="Group successfully created"),
-     *     @OA\Response(response=422, description="Validation failed"),
-     *     @OA\Response(response=500, description="An error occurred")
-     * )
-     */
-    public function rejectInvitation(Group $group): JsonResponse
-    {
-        try{
-            $user = Auth::user();
-
-            $pivot = $group->users()->where('user_id', $user->id)->firstOrFail()->pivot;
-            $this->authorize('updateStatus', $pivot);
-
+            $pivot = $event->users()->where('user_id', $user->id)->firstOrFail()->pivot;
             $pivot->delete();
 
-            return response()->json(['message' => 'You rejected the invitation']);
+            return response()->json(['message' => 'You leaved the event']);
         } catch (ModelNotFoundException $e) {
             return $this->errorsService->modelNotFoundException('group', $e);
         } catch (Exception $e){
             return $this->errorsService->exception('group', $e);
         }
-    }}
+    }
+}

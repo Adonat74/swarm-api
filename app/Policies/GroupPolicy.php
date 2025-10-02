@@ -30,6 +30,15 @@ class GroupPolicy
         return $membership && $membership->status === GroupUser::STATUS_APPROVED;
     }
 
+    public function createEvent(User $user, Group $group): bool
+    {
+        $membership = GroupUser::where('user_id', $user->id)
+            ->where('group_id', $group->id)
+            ->first();
+
+        return $membership && $membership->status === GroupUser::STATUS_APPROVED;
+    }
+
 
     /**
      * Determine whether the user can delete the model.

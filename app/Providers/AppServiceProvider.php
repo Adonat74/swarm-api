@@ -2,14 +2,15 @@
 
 namespace App\Providers;
 
+use App\Models\GroupUser;
+use App\Policies\GroupUserPolicy;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
 
-
     protected $policies = [
-        \App\Models\GroupUser::class => \App\Policies\GroupUserPolicy::class,
+        GroupUser::class => GroupUserPolicy::class,
     ];
 
     /**

@@ -30,18 +30,4 @@ class EventPolicy
 
         return $membership && $membership->status === GroupUser::STATUS_APPROVED;
     }
-
-
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function createEvent(User $user, Group $group): bool
-    {
-        dd('hello');
-        $membership = GroupUser::where('user_id', $user->id)
-            ->where('group_id', $group->id)
-            ->first();
-
-        return $membership && $membership->status === GroupUser::STATUS_APPROVED;
-    }
 }

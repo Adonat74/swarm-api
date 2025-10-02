@@ -9,6 +9,7 @@ class ImagesManagementService
 {
     public function addImages($request, $model, $column_name): void
     {
+//        dd('request');
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
                 //enregistre les images dans le dossier storage/app/public/images et l'url pour y accéder dans la table image

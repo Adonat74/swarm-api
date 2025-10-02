@@ -218,6 +218,58 @@ class EventController extends Controller
         }
     }
 
+
+    /**
+     * @OA\Post(
+     *     path="/api/events",
+     *     summary="Add a event - need to be authentified as user",
+     *     tags={"Events"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="The ID of the event",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *          required=true,
+     *          @OA\MediaType(
+     *               mediaType="multipart/form-data",
+     *               @OA\Schema(
+     *                   required={"name", "image"},
+     *                   @OA\Property(property="name", type="string",description="Event's name"),
+     *                   @OA\Property(property="image", type="string", format="binary")
+     *               )
+     *          )
+     *     ),
+     *     @OA\Response(response=201, description="Event successfully created"),
+     *     @OA\Response(response=422, description="Validation failed"),
+     *     @OA\Response(response=500, description="An error occurred")
+     * )
+     */
+    public function addEventImages(Event $event): JsonResponse
+    {
+        try{
+            $user = Auth::user();
+
+            $group = Group::findOrFail($request->group_id);
+            $this->authorize('createEvent', $group); // policy check
+
+            $event = Event::create($request->safe()->except(['images']));
+            $event->users()->attach($user->id, [
+                'participate' => true,
+                'is_creator' => true
+            ]);
+            $this->imagesManagementService->addImages($request, $event, 'event_id');
+
+            return response()->json($event->load(['images', 'users']));
+        } catch (ModelNotFoundException $e) {
+            return $this->errorsService->modelNotFoundException('event', $e);
+        } catch (Exception $e){
+            return $this->errorsService->exception('event', $e);
+        }
+    }
+
     /**
      * @OA\Post(
      *     path="/api/groups/{id}/request",

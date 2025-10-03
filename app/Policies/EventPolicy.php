@@ -84,4 +84,17 @@ class EventPolicy
                 ->where('event_id', $event->id)
                 ->exists();
     }
+
+    /**
+     * Determine whether the user can view the model.
+     */
+    public function addComment(User $user, Event $event): bool
+    {
+        $group = $event->group;
+
+        return GroupUser::where('user_id', $user->id)
+            ->where('group_id', $group->id)
+            ->where('status', GroupUser::STATUS_APPROVED)
+            ->exists();
+    }
 }

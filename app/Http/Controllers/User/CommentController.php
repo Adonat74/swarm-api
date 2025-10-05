@@ -4,10 +4,8 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CommentRequest;
-use App\Http\Requests\EventRequest;
 use App\Models\Comment;
 use App\Models\Event;
-use App\Models\Group;
 use App\Services\ErrorsService;
 use App\Services\ImagesManagementService;
 use Exception;

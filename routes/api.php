@@ -25,8 +25,8 @@ Route::controller(CommentController::class)->middleware(['auth:api'])->group(fun
     Route::get('comments/{comment}/replies', 'getCommentReplies');
     Route::post('events/{event}/comments', 'addEventComment');
     Route::post('comments/{comment}/replies', 'addCommentReply');
-    Route::post('comments/{comment}/likes', 'addCommentLike');
-    Route::delete('comments/{comment}/likes', 'deleteCommentLike');
+    Route::post('comments/{comment}/reactions', 'addCommentReaction');
+    Route::delete('comments/{comment}/reactions', 'deleteCommentReaction');
     Route::post('comments/{comment}', 'updateComment');
     Route::delete('comments/{comment}', 'deleteComment');
 });

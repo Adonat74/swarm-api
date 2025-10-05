@@ -4,8 +4,10 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CommentRequest;
+use App\Http\Requests\ReactionRequest;
 use App\Models\Comment;
 use App\Models\Event;
+use App\Models\Reaction;
 use App\Services\ErrorsService;
 use App\Services\ImagesManagementService;
 use Exception;
@@ -55,7 +57,7 @@ class CommentController extends Controller
 
             $this->authorize('view', $comment); // policy check
 
-            $replies = $comment->load(['replies'])->makeHidden(['event']);
+            $replies = $comment->load(['replies', 'reactions'])->makeHidden(['event']);
             return response()->json($replies);
         } catch (ModelNotFoundException $e) {
             return $this->errorsService->modelNotFoundException('comment', $e);
@@ -67,9 +69,9 @@ class CommentController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/events",
-     *     summary="Add a event - need to be authentified as user",
-     *     tags={"Events"},
+     *     path="/api/events/41/comments",
+     *     summary="Add a comment - need to be authentified as user",
+     *     tags={"Comments"},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
@@ -104,7 +106,6 @@ class CommentController extends Controller
                 'event_id' => $event->id,
                 'user_id' => $user->id,
                 'body' => $request->input('body'),
-                // add other fields you allow
             ]);
 
             return response()->json($comment);
@@ -158,7 +159,6 @@ class CommentController extends Controller
                 'user_id' => $user->id,
                 'parent_id' => $comment->id,
                 'body' => $request->input('body'),
-                // add other fields you allow
             ]);
 
             return response()->json($reply->load(['parent']));
@@ -172,9 +172,9 @@ class CommentController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/comments/{id}/likes",
-     *     summary="Add a event - need to be authentified as user",
-     *     tags={"Events"},
+     *     path="/api/comments/{id}/reactions",
+     *     summary="Add a comment reaction - need to be authentified as user",
+     *     tags={"Comments"},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
@@ -198,17 +198,69 @@ class CommentController extends Controller
      *     @OA\Response(response=500, description="An error occurred")
      * )
      */
-    public function addCommentLike(Comment $comment): JsonResponse
+    public function addCommentReaction(ReactionRequest $request, Comment $comment): JsonResponse
     {
         try{
             $user = Auth::user();
 
-            $this->authorize('addCommentLike', $comment); // policy check
+            $this->authorize('addCommentReaction', $comment); // policy check
 
-            $comment->likes = $comment->likes + 1;
-            $comment->save();
+            $reaction = Reaction::create([
+                'emoji' => $request->input('emoji'),
+                'user_id' => $user->id,
+                'comment_id' => $comment->id,
+            ]);
 
-            return response()->json($comment);
+            return response()->json($reaction);
+        } catch (ModelNotFoundException $e) {
+            return $this->errorsService->modelNotFoundException('event', $e);
+        } catch (Exception $e){
+            return $this->errorsService->exception('event', $e);
+        }
+    }
+
+
+    /**
+     * @OA\Delete(
+     *     path="/api/comments/{id}/reactions",
+     *     summary="Delete a comment raction - need to be authentified as user",
+     *     tags={"Comments"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="The ID of the event",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *          required=true,
+     *          @OA\MediaType(
+     *               mediaType="multipart/form-data",
+     *               @OA\Schema(
+     *                   required={"name", "image"},
+     *                   @OA\Property(property="name", type="string",description="Event's name"),
+     *                   @OA\Property(property="image", type="string", format="binary")
+     *               )
+     *          )
+     *     ),
+     *     @OA\Response(response=201, description="Event successfully created"),
+     *     @OA\Response(response=422, description="Validation failed"),
+     *     @OA\Response(response=500, description="An error occurred")
+     * )
+     */
+    public function deleteCommentReaction(Comment $comment): JsonResponse
+    {
+        try{
+            $user = Auth::user();
+
+            $this->authorize('deleteCommentReaction', $comment); // policy check
+
+            $reaction = Reaction::where('comment_id', $comment->id)
+                ->where('user_id', $user->id)
+                ->first();
+            $reaction->delete();
+
+            return response()->json(['message' => 'reaction deleted successfully']);
         } catch (ModelNotFoundException $e) {
             return $this->errorsService->modelNotFoundException('event', $e);
         } catch (Exception $e){

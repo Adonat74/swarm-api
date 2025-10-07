@@ -79,4 +79,20 @@ class CommentPolicy
 
         return $reaction && $groupUser;
     }
+
+    /**
+     * Determine whether the user can view the model.
+     */
+    public function updateComment(User $user, Comment $comment): bool
+    {
+        return $comment->user_id === $user->id;
+    }
+
+    /**
+     * Determine whether the user can view the model.
+     */
+    public function deleteComment(User $user, Comment $comment): bool
+    {
+        return $comment->user_id === $user->id;
+    }
 }

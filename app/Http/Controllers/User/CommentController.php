@@ -268,4 +268,83 @@ class CommentController extends Controller
         }
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/comments/{id}",
+     *     summary="update a comment - need to be authentified as user",
+     *     tags={"Comments"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="The ID of the comment",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *          required=true,
+     *          @OA\MediaType(
+     *               mediaType="multipart/form-data",
+     *               @OA\Schema(
+     *                   required={"name", "image"},
+     *                   @OA\Property(property="name", type="string",description="Event's name"),
+     *                   @OA\Property(property="image", type="string", format="binary")
+     *               )
+     *          )
+     *     ),
+     *     @OA\Response(response=201, description="Event successfully created"),
+     *     @OA\Response(response=422, description="Validation failed"),
+     *     @OA\Response(response=500, description="An error occurred")
+     * )
+     */
+    public function updateComment(CommentRequest $request, Comment $comment): JsonResponse
+    {
+        try{
+            $user = Auth::user();
+
+            $this->authorize('updateComment', $comment); // policy check
+
+
+            $comment->update($request->safe()->except(['image']));
+
+
+            return response()->json($comment);
+        } catch (ModelNotFoundException $e) {
+            return $this->errorsService->modelNotFoundException('event', $e);
+        } catch (Exception $e){
+            return $this->errorsService->exception('event', $e);
+        }
+    }
+
+
+    /**
+     * @OA\Delete(
+     *     path="/api/comments/{id}",
+     *     summary="delete a comment - need to be authentified as user",
+     *     tags={"Comments"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="The ID of the comment",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(response=201, description="Event successfully created"),
+     *     @OA\Response(response=422, description="Validation failed"),
+     *     @OA\Response(response=500, description="An error occurred")
+     * )
+     */
+    public function deleteComment(Comment $comment): JsonResponse
+    {
+        try{
+            $this->authorize('deleteComment', $comment); // policy check
+            $comment->delete();
+            return response()->json(['message' => 'comment deleted successfully']);
+        } catch (ModelNotFoundException $e) {
+            return $this->errorsService->modelNotFoundException('event', $e);
+        } catch (Exception $e){
+            return $this->errorsService->exception('event', $e);
+        }
+    }
+
+
 }

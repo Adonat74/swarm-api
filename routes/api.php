@@ -5,13 +5,13 @@ use App\Http\Controllers\Admin\AdminEventController;
 use App\Http\Controllers\Admin\AdminGroupController;
 use App\Http\Controllers\Admin\AdminMessageController;
 use App\Http\Controllers\Admin\AdminUserController;
-use App\Http\Controllers\CreatorEventController;
-use App\Http\Controllers\CreatorGroupController;
-use App\Http\Controllers\MessageController;
+use App\Http\Controllers\Creator\CreatorEventController;
+use App\Http\Controllers\Creator\CreatorGroupController;
 use App\Http\Controllers\User\AuthController;
 use App\Http\Controllers\User\CommentController;
 use App\Http\Controllers\User\EventController;
 use App\Http\Controllers\User\GroupController;
+use App\Http\Controllers\User\MessageController;
 use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
 

@@ -34,7 +34,7 @@ class EventController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/events/{id}",
+     *     path="/api/creator/events/{id}",
      *     summary="Get one event by id - need to be authentified as user and be part of the group",
      *     tags={"Events"},
      *      @OA\Parameter(

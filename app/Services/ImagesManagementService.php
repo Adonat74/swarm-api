@@ -3,13 +3,14 @@
 namespace App\Services;
 
 use App\Models\Image;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class ImagesManagementService
 {
     public function addImages($request, $model, $column_name): void
     {
-//        dd('request');
+        $user = Auth::user();
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
                 //enregistre les images dans le dossier storage/app/public/images et l'url pour y accéder dans la table image
@@ -17,6 +18,7 @@ class ImagesManagementService
                 $image = new Image([
                     'url' => url('storage/' . $imagePath),
                     $column_name => $model->id,
+                    'owner_id' => $user->id,
                 ]);
                 $image->save();
             }
@@ -61,6 +63,7 @@ class ImagesManagementService
 
     public function addSingleImage($request, $model, $column_name): void
     {
+        $user = Auth::user();
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             //enregistre les images dans le dossier storage/app/public/images et l'url pour y accéder dans la table image
@@ -68,6 +71,7 @@ class ImagesManagementService
             $image = new Image([
                 'url' => url('storage/' . $imagePath),
                 $column_name => $model->id,
+                'owner_id' => $user->id,
             ]);
             $image->save();
         }
@@ -94,12 +98,11 @@ class ImagesManagementService
         }
     }
 
-    public function deleteSingleImage($model): void
+    public function deleteSingleImage($image): void
     {
-        $existingImage = $model->images()->first();
-        if ($existingImage) {
-            Storage::disk('public')->delete($existingImage->url);
-            $existingImage->delete();
+        if ($image) {
+            Storage::disk('public')->delete($image->url);
+            $image->delete();
         }
     }
 }

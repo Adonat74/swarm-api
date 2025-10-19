@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Creator;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CreatorEventRequest;
 use App\Http\Requests\EventRequest;
 use App\Models\Event;
 use App\Models\Group;
@@ -60,7 +61,7 @@ class CreatorEventController extends Controller
      *     @OA\Response(response=500, description="An error occurred")
      * )
      */
-    public function updateEvent(EventRequest $request, Event $event): JsonResponse
+    public function updateEvent(CreatorEventRequest $request, Event $event): JsonResponse
     {
         try{
             $user = Auth::user();

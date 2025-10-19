@@ -6,6 +6,7 @@ use App\Models\Event;
 use App\Models\EventUser;
 use App\Models\Group;
 use App\Models\GroupUser;
+use App\Models\Image;
 use App\Models\User;
 
 class EventPolicy

@@ -17,8 +17,10 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('group_id')->nullable()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('event_id')->nullable()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('owner_id')->nullable()->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });
+
     }
 
     /**

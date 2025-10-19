@@ -13,6 +13,7 @@ use App\Http\Controllers\User\EventController;
 use App\Http\Controllers\User\GroupController;
 use App\Http\Controllers\User\MessageController;
 use App\Http\Controllers\User\UserController;
+use App\Http\Middleware\CheckEventCreator;
 use Illuminate\Support\Facades\Route;
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -47,6 +48,7 @@ Route::prefix('events')->controller(EventController::class)->middleware(['auth:a
     Route::get('/{event}/images', 'getEventImages');
     Route::post('/', 'addEvent');
     Route::post('/{event}/images', 'addEventImages');
+    Route::delete('/{event}/images', 'deleteEventImages');
     Route::post('/{event}/participate', 'participateEvent');
     Route::delete('/{event}/leave', 'leaveEvent');
 });
@@ -86,7 +88,7 @@ Route::controller(AuthController::class)->group(function () {
 ///////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// CREATOR ROUTES ///////////////////////////////////
 /////////////////////////////////////////////////////////////////////getUserEvents//////////////
-Route::prefix('creator')->group(function () {
+Route::prefix('creator')->middleware(CheckEventCreator::class)->group(function () {
 
     /////////////////////////////// CREATOR GROUP /////////////////////////////////////////
     Route::prefix('groups')->controller(CreatorGroupController::class)->group(function () {

@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\DeleteImagesRequest;
 use App\Http\Requests\EventRequest;
 use App\Http\Requests\ImagesRequest;
 use App\Models\Event;
 use App\Models\Group;
+use App\Models\Image;
 use App\Services\ErrorsService;
 use App\Services\ImagesManagementService;
 use Exception;
@@ -251,6 +253,64 @@ class EventController extends Controller
             $this->imagesManagementService->addImages($request, $event, 'event_id');
 
             return response()->json($event->load(['images']));
+        } catch (ModelNotFoundException $e) {
+            return $this->errorsService->modelNotFoundException('event', $e);
+        } catch (Exception $e){
+            return $this->errorsService->exception('event', $e);
+        }
+    }
+
+    /**
+     * @OA\Delete(
+     *     path="/api/events/{id}/images",
+     *     summary="Delete a event images - need to be authentified as user and be part of the group",
+     *     tags={"Events"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="The ID of the event",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *          required=true,
+     *          @OA\MediaType(
+     *               mediaType="multipart/form-data",
+     *               @OA\Schema(
+     *                   required={"name", "image"},
+     *                   @OA\Property(property="name", type="string",description="Event's name"),
+     *                   @OA\Property(property="image", type="string", format="binary")
+     *               )
+     *          )
+     *     ),
+     *     @OA\Response(response=201, description="Event successfully created"),
+     *     @OA\Response(response=422, description="Validation failed"),
+     *     @OA\Response(response=500, description="An error occurred")
+     * )
+     */
+    public function deleteEventImages(DeleteImagesRequest $request, Event $event): JsonResponse
+    {
+        try{
+            $imageIds = $request->input('image_ids', []); // or request('image_ids')
+            $images = Image::whereIn('id', $imageIds)->get();
+            $this->authorize('addEventImages', $event); // policy check
+            $deletedIds = [];
+            $skippedIds = [];
+            foreach($images as $image){
+                try {
+                    $this->authorize('deleteImage', $image);
+                    $this->imagesManagementService->deleteSingleImage($image);
+                    $deletedIds[] = $image->id;
+                } catch (AuthorizationException $e) {
+                    $skippedIds[] = $image->id;
+                }
+            }
+
+            return response()->json([
+                'deleted' => $deletedIds,
+                'skipped' => $skippedIds,
+                'message' => 'Images processed.'
+            ]);
         } catch (ModelNotFoundException $e) {
             return $this->errorsService->modelNotFoundException('event', $e);
         } catch (Exception $e){

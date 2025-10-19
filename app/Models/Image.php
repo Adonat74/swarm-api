@@ -16,6 +16,7 @@ class Image extends Model
         'user_id',
         'event_id',
         'group_id',
+        'owner_id'
     ];
 
     public function user(): BelongsTo
@@ -31,5 +32,10 @@ class Image extends Model
     public function group(): BelongsTo
     {
         return $this->belongsTo(Group::class);
+    }
+
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

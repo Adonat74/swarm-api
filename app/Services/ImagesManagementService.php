@@ -2,12 +2,31 @@
 
 namespace App\Services;
 
+use App\Models\Event;
 use App\Models\Image;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class ImagesManagementService
 {
+    public function addEventImage($request, Event $event): void
+    {
+        $user = Auth::user();
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            //enregistre les images dans le dossier storage/app/public/images et l'url pour y accéder dans la table image
+            $imagePath = $image->store('images', 'public');
+            $image = new Image([
+                'url' => url('storage/' . $imagePath),
+                'owner_id' => $user->id,
+            ]);
+            $image->save();
+            $event->image_id = $image->id;
+            $event->save();
+        }
+    }
+
+
     public function addImages($request, $model, $column_name): void
     {
         $user = Auth::user();

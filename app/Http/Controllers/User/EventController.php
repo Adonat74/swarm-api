@@ -202,13 +202,13 @@ class EventController extends Controller
             $group = Group::findOrFail($request->group_id);
             $this->authorize('createEvent', $group); // policy check
 
-            $event = Event::create($request->safe()->except(['images']));
+            $event = Event::create($request->safe()->except(['image']));
             $event->users()->attach($user->id, [
                 'is_creator' => true
             ]);
-            $this->imagesManagementService->addImages($request, $event, 'event_id');
+            $this->imagesManagementService->addEventImage($request, $event);
 
-            return response()->json($event->load(['images', 'users']));
+            return response()->json($event->load(['image', 'users']));
         } catch (ModelNotFoundException $e) {
             return $this->errorsService->modelNotFoundException('event', $e);
         } catch (Exception $e){

@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
@@ -29,7 +30,7 @@ class User extends Authenticatable implements JWTSubject
         'remember_token',
     ];
 
-    protected $with = ['images'];
+    protected $with = ['image'];
 
     protected function casts(): array
     {
@@ -82,13 +83,18 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Comment::class);
     }
 
-    public function images(): HasMany
+    public function image(): HasOne
     {
-        return $this->hasMany(Image::class);
+        return $this->hasOne(Image::class);
     }
 
     public function reactions(): HasMany
     {
         return $this->hasMany(Reaction::class);
+    }
+
+    public function ownedImages(): HasMany
+    {
+        return $this->hasMany(Image::class);
     }
 }

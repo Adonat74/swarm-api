@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('location')->nullable();
             $table->string('status')->default('active'); # canceled or reported
             $table->foreignId('group_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('image_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });
     }

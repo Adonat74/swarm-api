@@ -28,8 +28,7 @@ class EventRequest extends FormRequest
             'date_time' => 'bail|required|date_format:Y-m-d H:i:s|after:now',
             'location' => 'bail|required|string|max:255',
             'group_id' => 'bail|required|exists:groups,id',
-            'images' => 'nullable|array',
-            'images.*' => 'nullable|file|mimetypes:video/mp4,video/avi,video/mpeg,image/jpeg,image/png,image/jpg,image/gif|max:100000',
+            'image' => 'nullable|file|mimetypes:image/jpeg,image/png,image/jpg,image/gif|max:10000',
         ];
     }
 

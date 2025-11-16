@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Notifications\Notifiable;
 
 class Event extends Model
@@ -23,6 +24,7 @@ class Event extends Model
         'location',
         'status',
         'group_id',
+        'image_id',
     ];
 
     protected $with = ['group'];
@@ -43,6 +45,11 @@ class Event extends Model
     public function images(): HasMany
     {
         return $this->hasMany(Image::class);
+    }
+
+    public function image(): HasOne
+    {
+        return $this->hasOne(Image::class);
     }
 
     public function comments(): HasMany

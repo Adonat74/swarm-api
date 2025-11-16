@@ -88,7 +88,7 @@ Route::controller(AuthController::class)->group(function () {
 ///////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// CREATOR ROUTES ///////////////////////////////////
 /////////////////////////////////////////////////////////////////////getUserEvents//////////////
-Route::prefix('creator')->middleware(CheckEventCreator::class)->group(function () {
+Route::prefix('creator')->group(function () {
 
     /////////////////////////////// CREATOR GROUP /////////////////////////////////////////
     Route::prefix('groups')->controller(CreatorGroupController::class)->group(function () {
@@ -98,9 +98,10 @@ Route::prefix('creator')->middleware(CheckEventCreator::class)->group(function (
     });
 
     /////////////////////////////// CREATOR EVENT /////////////////////////////////////////
-    Route::prefix('events')->controller(CreatorEventController::class)->group(function () {
+    Route::prefix('events')->middleware(CheckEventCreator::class)->controller(CreatorEventController::class)->group(function () {
         Route::post('/{event}', 'updateEvent');
         Route::delete('/{event}', 'deleteEvent');
+        Route::delete('/{event}', 'deleteEventImages');
     });
 });
 
